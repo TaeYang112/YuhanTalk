@@ -35,7 +35,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(537, 273);
+            this.button1.Location = new System.Drawing.Point(244, 517);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 0;
@@ -45,25 +45,25 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(211, 273);
+            this.textBox1.Location = new System.Drawing.Point(12, 518);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(320, 23);
+            this.textBox1.Size = new System.Drawing.Size(226, 23);
             this.textBox1.TabIndex = 1;
             // 
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 15;
-            this.listBox1.Location = new System.Drawing.Point(211, 115);
+            this.listBox1.Location = new System.Drawing.Point(12, 12);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(353, 139);
+            this.listBox1.Size = new System.Drawing.Size(307, 484);
             this.listBox1.TabIndex = 2;
             // 
             // YuhanTalk
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(331, 553);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);

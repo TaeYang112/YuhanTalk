@@ -11,13 +11,12 @@ namespace YuhanTalkServer.Client
         // TcpClient 객체
         public ClientData clientData { get; set; }    
 
-        public int key { get; }
+        public string ID { get; }
 
-        public ClientUser(int key, ClientData clientData)
+        public ClientUser(string id, ClientData clientData)
         {
             this.clientData = clientData;
-            this.key = key;
-            clientData.key = key;
+            this.ID = id;
         }
         
     }

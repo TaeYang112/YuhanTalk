@@ -18,7 +18,7 @@ namespace YuhanTalk
         private void button1_Click(object sender, EventArgs e)
         {
             MessageGenerator generator = new MessageGenerator(Protocols.C_MSG);
-            generator.AddString("¤·¤¤¶ó¤Ã³ª¤Ó¤©¤·");
+            generator.AddString(textBox1.Text);
             talkManager.SendMessage(generator.Generate());
         }
     }

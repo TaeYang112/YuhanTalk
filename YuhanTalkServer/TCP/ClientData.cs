@@ -22,7 +22,7 @@ namespace YuhanTalkServer.TCP
         {
             key = -1;
             this.client = client;
-            byteData = new byte[1024];
+            byteData = new byte[5];
         }
 
         ~ClientData()

@@ -28,9 +28,11 @@ namespace YuhanTalkServer
         // 수신받은 메시지 보관하는 큐
         ConcurrentQueue<KeyValuePair<ClientUser, byte[]>> messageQueue;
 
+        // DB 객체
+        private OracleDB oracleDB = new OracleDB();
 
         // 클라이언트들을 관리하는 객체
-        public ClientManager clientManager { get; set; }
+        public GuestClientManager clientManager { get; set; }
 
         // 메시지 처리하는 객체
         private MessageManager messageManager;
@@ -128,7 +130,7 @@ namespace YuhanTalkServer
             server.onClientLeave += new ClientLeaveEventHandler(OnClientLeave);
             server.onDataRecieve += new DataRecieveEventHandler(onDataRecieve);
 
-            clientManager = new ClientManager();
+            clientManager = new GuestClientManager();
 
             sema_ClientLeave = new Semaphore(1, 1);
 
@@ -151,6 +153,7 @@ namespace YuhanTalkServer
         public void Start()
         {
             server.Start();
+            oracleDB.ConnectionDB();
             HeartBeatTimer.Change(0, 1000);
             messageProcess_thread.Start();
         }
@@ -159,7 +162,7 @@ namespace YuhanTalkServer
         private void HeartBeat(object? t)
         {
             MessageGenerator generator = new MessageGenerator(Protocols.S_PING);
-            SendMessageToAll(generator.Generate());
+            //SendMessageToAll(generator.Generate());
         }
 
 
@@ -186,7 +189,7 @@ namespace YuhanTalkServer
 
             }
         }
-
+        /*
         // 메시지 전송
         public void SendMessage(byte[] message, int recieverKey)
         {
@@ -200,17 +203,15 @@ namespace YuhanTalkServer
         }
 
         // 모든 클라이언트들에게 메시지 전송 ( senderKey로 예외 클라이언트 설정 )
-        public void SendMessageToAll(byte[] message, int senderKey = -1)
+        public void SendMessageToAll(byte[] message)
         {
             foreach (var item in clientManager.ClientDic)
             {
-                if (item.Value.key == senderKey) continue;
-
-                SendMessage(message, item.Value.key);
+                SendMessage(message, item.Value.ID);
             }
 
         }
-
+        */
         #region Event
 
         // 서버에 새로운 클라이언트가 접속하면 호출됨
@@ -218,7 +219,7 @@ namespace YuhanTalkServer
         {
             ClientUser newClient = clientManager.AddClient(newClientData);
 
-            Console.WriteLine("[INFO] " + newClient.key + "번 클라이언트가 접속하였습니다.");
+            Console.WriteLine("[INFO] " + newClientData.key + "번 클라이언트가 접속하였습니다.");
 
 
             // client의 메시지가 수신되면 메시지와 함께 ClientUser을 반환하도록 함

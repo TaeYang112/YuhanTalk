@@ -8,32 +8,22 @@ namespace YuhanTalkServer.Client
     {
         // 클라이언트들을 담는 배열
         // 단순 배열과 다른점은 여러개의 스레드가 접근할때 자동으로 동기화 시켜줌
-        public ConcurrentDictionary<int, ClientUser> ClientDic { get; }
-
-        // 새로운 클라이언트에게 부여할 킷값을 저장
-        private int CurrentKey;
+        public ConcurrentDictionary<string, ClientUser> ClientDic { get; }
 
         public ClientManager()
         {
-            ClientDic = new ConcurrentDictionary<int, ClientUser>();
-            CurrentKey = 0;
+            ClientDic = new ConcurrentDictionary<string, ClientUser>();
         }
 
-        public ClientUser AddClient(ClientData newClientData)
+        public void AddClient(ClientUser newClientUser)
         {
-            ClientUser newClient = new ClientUser(CurrentKey, newClientData);
-
             // 새로운 클라이언트를 배열에 저장
-            ClientDic.TryAdd(CurrentKey, newClient);
-
-            CurrentKey++;
-
-            return newClient;
+            ClientDic.TryAdd(newClientUser.ID, newClientUser);
         }
 
-        public void RemoveClient(ClientData oldClient)
+        public void RemoveClient(ClientUser oldClientUser)
         {
-            ClientDic.TryRemove(oldClient.key, out _);
+            ClientDic.TryRemove(oldClientUser.ID, out _);
         }
     }
 }

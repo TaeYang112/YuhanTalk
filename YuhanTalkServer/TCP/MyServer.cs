@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using YuhanTalkModule;
 
 // -----------------
 // ----- 서버 ------
@@ -94,7 +95,7 @@ namespace YuhanTalkServer.TCP
         {
             ClientData clientData = asyncResultParam.clientData;
 
-            clientData.client.GetStream().BeginRead(clientData.byteData, 0, clientData.byteData.Length, new AsyncCallback(DataRecieved), asyncResultParam);
+            clientData.client.GetStream().BeginRead(clientData.byteData, 0, 4, new AsyncCallback(DataRecieved), asyncResultParam);
         }
 
         // 데이터를 수신
@@ -105,18 +106,25 @@ namespace YuhanTalkServer.TCP
             try
             {
                 ClientData clientData = result!.clientData;
-                int byteLength = clientData.client.GetStream().EndRead(ar);
 
-                byte[] buffer = new byte[byteLength];
+                int byteSize = BitConverter.ToInt32(clientData.byteData, 1);
+                byte[] buffer = new byte[byteSize];
+                Array.Copy(clientData.byteData, buffer, 5);
 
-                Array.Copy(clientData.byteData, 0, buffer, 0, byteLength);
-                
+                int readIdx = 4;
+
+                while (readIdx < byteSize)
+                {
+                    int length = clientData.client.GetStream().Read(buffer, readIdx, byteSize - 4);
+                    readIdx += length;
+                }
+
                 // 연결된 함수 호출
                 onDataRecieve!(result!, buffer);
 
                 Array.Clear(clientData.byteData, 0, clientData.byteData.Length);
 
-                // 다시 데이터 수신 감시
+            // 다시 데이터 수신 감시
                 DetectDataRecieve(result);
             }
             catch

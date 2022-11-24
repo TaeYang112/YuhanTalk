@@ -71,7 +71,6 @@ namespace YuhanTalkModule
             list[2] = bytes[1];
             list[3] = bytes[2];
             list[4] = bytes[3];
-
             return list.ToArray();
         }
 
