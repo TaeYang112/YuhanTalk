@@ -1,3 +1,5 @@
+using YuhanTalk.Screen;
+
 namespace YuhanTalk
 {
     internal static class Program
@@ -11,7 +13,7 @@ namespace YuhanTalk
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new YuhanTalk());
+            Application.Run(new MainForm());
         }
     }
 }

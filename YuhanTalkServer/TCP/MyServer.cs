@@ -8,7 +8,6 @@ using YuhanTalkModule;
 namespace YuhanTalkServer.TCP
 {
     public delegate void ClientJoinEventHandler(ClientData newClient);
-    public delegate void ClientLeaveEventHandler(ClientData oldClient);
     public delegate void DataRecieveEventHandler(MyServer.AsyncResultParam param, byte[] Message);
     public class MyServer
     {
@@ -20,9 +19,6 @@ namespace YuhanTalkServer.TCP
 
         // 클라이언트가 접속할경우 ClientJoin에 연결된 함수를 호출함
         public event ClientJoinEventHandler? onClientJoin;
-
-        // 클라이언트가 접속할경우 ClientLeave에 연결된 함수를 호출함
-        public event ClientLeaveEventHandler? onClientLeave;
 
         // 클라이언트로 부터 메시지가 수신되면 연결된 함수 호출
         public event DataRecieveEventHandler? onDataRecieve;
@@ -77,17 +73,12 @@ namespace YuhanTalkServer.TCP
 
         }
 
+        // 메시지 전송
+        // try catch 필요
         public void SendMessage(byte[] message, ClientData receiver)
         {
-            try
-            {
-                // 메시지 전송
-                receiver.client.GetStream().Write(message, 0, message.Length);
-            }
-            catch
-            {
-                onClientLeave!(receiver);
-            }
+            // 메시지 전송
+            receiver.client.GetStream().Write(message, 0, message.Length);
         }
         
         // 클라이언트 데이터 수신을 감지하고 ReturnObj와 함께 DataRecived 호출
@@ -107,12 +98,21 @@ namespace YuhanTalkServer.TCP
             {
                 ClientData clientData = result!.clientData;
 
+                // 먼저 크기를 읽음
                 int byteSize = BitConverter.ToInt32(clientData.byteData, 1);
+
+                if (byteSize == 0)
+                {
+                    return;
+                }
+
+                // 크기에 맞게 버퍼를 생성
                 byte[] buffer = new byte[byteSize];
-                Array.Copy(clientData.byteData, buffer, 5);
+                Array.Copy(clientData.byteData, buffer, 4);
 
                 int readIdx = 4;
 
+                // 크기에 맞는 내용을 모두 읽을때까지 읽어드림
                 while (readIdx < byteSize)
                 {
                     int length = clientData.client.GetStream().Read(buffer, readIdx, byteSize - 4);
@@ -124,11 +124,13 @@ namespace YuhanTalkServer.TCP
 
                 Array.Clear(clientData.byteData, 0, clientData.byteData.Length);
 
-            // 다시 데이터 수신 감시
+                // 다시 데이터 수신 감시
                 DetectDataRecieve(result);
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine("에러");
+                Console.WriteLine(ex.ToString());  
             }
 
         }

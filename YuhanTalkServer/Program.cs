@@ -1,10 +1,4 @@
-﻿
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Threading;
+﻿using System.Collections.Concurrent;
 using YuhanTalkModule;
 using YuhanTalkServer.Client;
 using YuhanTalkServer.TCP;
@@ -17,7 +11,7 @@ namespace YuhanTalkServer
 {
     public class Program
     {
-        public static Program program = Program.GetInstance();
+        //public static Program program = Program.GetInstance();
 
         // TCP 서버를 관리하고 클라이언트와 통신하는 객체
         private MyServer server;
@@ -29,16 +23,19 @@ namespace YuhanTalkServer
         ConcurrentQueue<KeyValuePair<ClientUser, byte[]>> messageQueue;
 
         // DB 객체
-        private OracleDB oracleDB = new OracleDB();
+        public OracleDB OracleDB { get; } = new OracleDB();
 
-        // 클라이언트들을 관리하는 객체
-        public GuestClientManager clientManager { get; set; }
+        // 로그인한 클라이언트들을 관리하는 객체
+        public ClientManager clientManager { get; }
+
+        // 비로그인 클라이언트 관리 객체
+        public GuestClientManager guestClientManager { get;}
 
         // 메시지 처리하는 객체
         private MessageManager messageManager;
 
         // 서버와 클라이언트가 계속 연결되어있는지 확인하기 위해 일정시간마다 가짜 메시지를 보냄
-        private System.Threading.Timer HeartBeatTimer;
+        private Timer HeartBeatTimer;
 
         // 하나의 클라이언트가 여러번 나가는거를 막기위한 세마포
         private Semaphore sema_ClientLeave;
@@ -48,12 +45,13 @@ namespace YuhanTalkServer
 
         static void Main(string[] args)
         {
+            Program program = new Program();
             program.Start();
             Console.WriteLine("[INFO] 서버가 시작되었습니다.");
             while (true)
             {
                 string[] command = Console.ReadLine()!.Split(' ');
-
+                program.server.server.Stop();
                 try
                 {
                     switch (command[0])
@@ -114,6 +112,7 @@ namespace YuhanTalkServer
             }
         }
 
+        /*
         public static Program GetInstance()
         {
             if (program == null)
@@ -122,15 +121,16 @@ namespace YuhanTalkServer
             }
             return program;
         }
+        */
 
         private Program()
         {
             server = new MyServer();
-            server.onClientJoin += new ClientJoinEventHandler(OnClientJoin);
-            server.onClientLeave += new ClientLeaveEventHandler(OnClientLeave);
+            server.onClientJoin += new ClientJoinEventHandler(ClientJoin);
             server.onDataRecieve += new DataRecieveEventHandler(onDataRecieve);
 
-            clientManager = new GuestClientManager();
+            clientManager = new ClientManager();
+            guestClientManager = new GuestClientManager();
 
             sema_ClientLeave = new Semaphore(1, 1);
 
@@ -153,8 +153,8 @@ namespace YuhanTalkServer
         public void Start()
         {
             server.Start();
-            oracleDB.ConnectionDB();
-            HeartBeatTimer.Change(0, 1000);
+            OracleDB.ConnectionDB();
+            HeartBeatTimer.Change(0, 30000);
             messageProcess_thread.Start();
         }
 
@@ -162,7 +162,19 @@ namespace YuhanTalkServer
         private void HeartBeat(object? t)
         {
             MessageGenerator generator = new MessageGenerator(Protocols.S_PING);
-            //SendMessageToAll(generator.Generate());
+            byte[] message = generator.Generate();
+
+            // 비로그인 유저
+            foreach(var client in guestClientManager.ClientDic)
+            {
+                SendMessage(message, client.Value);
+            }
+
+            // 로그인 유저
+            foreach (var client in clientManager.ClientDic)
+            {
+                SendMessage(message, client.Value);
+            }
         }
 
 
@@ -189,35 +201,29 @@ namespace YuhanTalkServer
 
             }
         }
-        /*
+        
         // 메시지 전송
-        public void SendMessage(byte[] message, int recieverKey)
+        public void SendMessage(byte[] message, ClientUser client)
         {
-            ClientUser clientChar;
-
-            bool result = clientManager.ClientDic.TryGetValue(recieverKey, out clientChar!);
-            if (result == false) return;
-
-            server.SendMessage(message, clientChar.clientData);
-
-        }
-
-        // 모든 클라이언트들에게 메시지 전송 ( senderKey로 예외 클라이언트 설정 )
-        public void SendMessageToAll(byte[] message)
-        {
-            foreach (var item in clientManager.ClientDic)
+            try
             {
-                SendMessage(message, item.Value.ID);
+                // 메시지 전송
+                server.SendMessage(message, client.clientData);
+            }
+            catch
+            {
+                // 전송에 실패할 경우 접속을 끊음
+                ClientLeave(client);
             }
 
         }
-        */
+        
         #region Event
 
         // 서버에 새로운 클라이언트가 접속하면 호출됨
-        private void OnClientJoin(ClientData newClientData)
+        private void ClientJoin(ClientData newClientData)
         {
-            ClientUser newClient = clientManager.AddClient(newClientData);
+            ClientUser newClient = guestClientManager.AddClient(newClientData);
 
             Console.WriteLine("[INFO] " + newClientData.key + "번 클라이언트가 접속하였습니다.");
 
@@ -229,26 +235,29 @@ namespace YuhanTalkServer
 
 
         // 클라이언트와 연결이 끊기면 호출됨
-        private void OnClientLeave(ClientData oldClientData)
+        private void ClientLeave(ClientUser oldClient)
         {
-            sema_ClientLeave.WaitOne();
-
-            // 클라이언트 배열에서 가져옴
-            bool bClientValid = clientManager.ClientDic.TryGetValue(oldClientData.key, out _);
-
-            // 클라이언트가 존재하지 않으면 리턴
-            if (bClientValid == false)
+            bool result = false;
+            
+            // 로그인된 클라이언트일 경우
+            if(oldClient.IsLogin)
             {
-                sema_ClientLeave.Release();
-                return;
+                // clientManager에 있음
+                result = clientManager.RemoveClient(oldClient);
+
+                if(result == true)
+                {
+                    Console.WriteLine($"[INFO] {oldClient.ID}님이 접속을 종료하였습니다.");
+                }
             }
-
-            Console.WriteLine("[INFO] " + oldClientData.key + "번 클라이언트와의 연결이 끊겼습니다.");
-
-            // 최종적으로 클라이언트 관리목록에서 제거
-            clientManager.RemoveClient(oldClientData);
-
-            sema_ClientLeave.Release();
+            else
+            {
+                result = guestClientManager.RemoveClient(oldClient);
+                if (result == true)
+                {
+                    Console.WriteLine($"[INFO] {oldClient.clientData.key}번 클라이언트님이 접속을 종료하였습니다.");
+                }
+            }
         }
 
         //  클라이언트로 부터 메시지 수신

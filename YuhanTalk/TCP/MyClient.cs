@@ -29,7 +29,7 @@ namespace YuhanTalk
 
         public MyClient()
         {
-            readByteData = new byte[1024];
+            readByteData = new byte[5];
 
             // 클라이언트 생성
             client = new TcpClient();
@@ -77,7 +77,7 @@ namespace YuhanTalk
             }
             
             // 서버로 부터 메시지를 받을경우 OnMessageReceive 메소드 호출
-            client.GetStream().BeginRead(readByteData, 0, readByteData.Length, new AsyncCallback(DataRecieved), null);
+            client.GetStream().BeginRead(readByteData, 0, 4, new AsyncCallback(DataRecieved), null);
         }
 
 
@@ -99,28 +99,43 @@ namespace YuhanTalk
 
         private void DataRecieved(IAsyncResult ar)
         {
-            // 이벤트 발생 ( 이벤트에 연결된 함수들 호출 ) 
-            if(onDataRecieve != null)
-                onDataRecieve((byte[])readByteData.Clone());
+            // 먼저 크기를 읽음
+            int byteSize = BitConverter.ToInt32(readByteData, 1);
+
+            if (byteSize == 0) return;
+
+            // 크기에 맞게 버퍼를 생성
+            byte[] buffer = new byte[byteSize];
+            Array.Copy(readByteData, buffer, 4);
+
+            int readIdx = 4;
+
+            // 크기에 맞는 내용을 모두 읽을때까지 읽어드림
+            while (readIdx < byteSize)
+            {
+                int length = client.GetStream().Read(buffer, readIdx, byteSize - 4);
+                readIdx += length;
+            }
+
+            // 연결된 함수 호출
+            onDataRecieve!(buffer);
 
             Array.Clear(readByteData, 0, readByteData.Length);
 
-            
-            
 
             // 다시 메시지가 올때 이 함수가 호출되도록 함
             try
             {
-                client.GetStream().BeginRead(readByteData, 0, readByteData.Length, new AsyncCallback(DataRecieved), null);
+                client.GetStream().BeginRead(readByteData, 0, 4, new AsyncCallback(DataRecieved), null);
 
             }
             catch (System.IO.IOException)
             {
                 Console.WriteLine("서버와 연결이 끊어졌습니다.");
             }
-            catch
+            catch(System.InvalidOperationException)
             {
-                Console.WriteLine("알수 없는 오류발생");
+                Console.WriteLine("서버와 연결이 끊어졌습니다.");
             }
         }
     }

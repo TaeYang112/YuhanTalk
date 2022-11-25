@@ -32,9 +32,9 @@ namespace YuhanTalkServer.Client
             return newClient;
         }
 
-        public void RemoveClient(ClientData oldClient)
+        public bool RemoveClient(ClientUser oldClient)
         {
-            ClientDic.TryRemove(oldClient.key, out _);
+            return ClientDic.TryRemove(oldClient.clientData.key, out _);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace YuhanTalk
 {
-    partial class YuhanTalk
+    partial class ChattingRoom
     {
         /// <summary>
         ///  Required designer variable.

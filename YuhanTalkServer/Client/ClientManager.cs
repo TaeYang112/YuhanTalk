@@ -15,15 +15,15 @@ namespace YuhanTalkServer.Client
             ClientDic = new ConcurrentDictionary<string, ClientUser>();
         }
 
-        public void AddClient(ClientUser newClientUser)
+        public bool AddClient(ClientUser newClientUser)
         {
             // 새로운 클라이언트를 배열에 저장
-            ClientDic.TryAdd(newClientUser.ID, newClientUser);
+            return ClientDic.TryAdd(newClientUser.ID, newClientUser);
         }
 
-        public void RemoveClient(ClientUser oldClientUser)
+        public bool RemoveClient(ClientUser oldClientUser)
         {
-            ClientDic.TryRemove(oldClientUser.ID, out _);
+            return ClientDic.TryRemove(oldClientUser.ID, out _);
         }
     }
 }

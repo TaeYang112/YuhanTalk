@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 
 namespace YuhanTalkServer
 {
-    internal class OracleDB
+    public class OracleDB
     {
         OracleConnection? conn;
-        OracleCommand? cmd;
+
+        ~OracleDB()
+        {
+            conn?.Dispose();
+        }
 
         // DB 연결
         public void ConnectionDB()
@@ -31,28 +35,39 @@ namespace YuhanTalkServer
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.ToString());
             }
-
-            ExecuteDataReader();
         }
 
 
-        public void ExecuteDataReader()
+        public LoginInfo GetLoginInfo(string id, string pw)
         {
-            string id, passwd;
-            string query = $@"select * from userInfo";
-            OracleCommand cmd = new OracleCommand(query,conn);
+            LoginInfo info = new LoginInfo();
+            info.Empty = true;
 
-            using (OracleDataReader dr = cmd.ExecuteReader())
+            string query = $"select * from userInfo where id = '{id}' and password = '{pw}'";
+
+            OracleDataReader dr;
+            using (OracleCommand cmd = new OracleCommand(query, conn))
             {
-                if (dr != null)
+                dr = cmd.ExecuteReader();
+
+                if (dr.Read())
                 {
-                    while (dr.Read())
-                    {
-                        id = dr[0].ToString()!;
-                        passwd = dr[1].ToString()!;
-                    }
+                    info.Empty = false;
+                    info.Id = dr[0].ToString()!;
+                    info.Password = dr[1].ToString()!;
+                    info.Name = dr[2].ToString()!;
                 }
             }
+
+            return info;
+        }
+
+        public struct LoginInfo
+        {
+            public bool Empty;
+            public string Id;
+            public string Password;
+            public string Name;
         }
 
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using YuhanTalkModule;
 using YuhanTalkServer.Client;
+using static YuhanTalkServer.OracleDB;
 
 namespace YuhanTalkServer
 {
@@ -24,6 +25,11 @@ namespace YuhanTalkServer
             byte protocol = converter.Protocol;
             switch (protocol)
             {
+                case Protocols.REQ_LOGIN:
+                    {
+                        LoginProcess(client, converter);
+                    }
+                    break;
                 case Protocols.C_MSG:
                     {
                         string s = converter.NextString();
@@ -31,11 +37,35 @@ namespace YuhanTalkServer
                     }
                     break;
                 default:
-                    Console.WriteLine("에러");
+                    Console.WriteLine("에러 프로토콜 : " + protocol);
                     break;
 
             }
             
+        }
+
+        private void LoginProcess(ClientUser client, MessageConverter convert)
+        {
+            string Id = convert.NextString();
+            string Pw = convert.NextString();
+
+            LoginInfo info = program.OracleDB.GetLoginInfo(Id, Pw);
+
+            MessageGenerator generator = new MessageGenerator(Protocols.RES_LOGIN);
+
+            // ID와 비번이 같은 데이터가 있다면
+            if(info.Empty == false)
+            {
+                generator.AddByte(LoginResult.SUCCESS);
+                generator.AddString(info.Name);
+            }
+            else
+            {
+                generator.AddByte(LoginResult.FAIL);
+            }
+
+            // 클라이언트에게 전송
+            program.SendMessage(generator.Generate(), client);
         }
        
     }

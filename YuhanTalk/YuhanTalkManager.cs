@@ -5,26 +5,25 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using YuhanTalk;
+using YuhanTalk.Screen;
 
 namespace YuhanTalk
 {
     public partial class YuhanTalkManager
     {
         // 자신 싱글톤 객체
-        static YuhanTalkManager? talkManager = null;
+        //static YuhanTalkManager? talkManager = null;
 
         // 에러로 인한 프로그램 종료 플래그 변수
         private bool bExitReady = false;
 
         // 서버와 TCP통신을 담당하는 객체
-        public MyClient myClient { get; set; }
+        public MyClient myClient { get; }
 
+        public MainForm MainForm { get; }
 
-        // 사용자의 캐릭터
-        public ClientUser clientUser { get; set; }
-
-        // 게임 시작 여부
-        public bool IsGameStart { get; set; }
+        // 사용자 정보
+        public ClientUser clientUser { get; }
 
         // 메시지 처리 스레드
         private Thread messageProcess_thread;
@@ -33,12 +32,12 @@ namespace YuhanTalk
         private MessageManager messageManager;
 
         // 수신받은 메시지 보관하는 큐
-        ConcurrentQueue<byte[]> messageQueue;
+        private ConcurrentQueue<byte[]> messageQueue;
 
         // 메시지가 없으면 대기하기 위한 락 오브젝트
         object lockObject = new object();
 
-
+        /*
         public static YuhanTalkManager GetInstance()
         {
             if (talkManager == null)
@@ -47,9 +46,11 @@ namespace YuhanTalk
             }
             return talkManager;
         }
-
-        private YuhanTalkManager()
+        */
+        public YuhanTalkManager(MainForm form)
         {
+            this.MainForm = form;
+
             // 클라이언트 객체 생성
             myClient = new MyClient();
 
@@ -70,7 +71,7 @@ namespace YuhanTalk
         }
 
 
-        public void Start(YuhanTalk form1)
+        public void Start()
         {
             myClient.Start();
             messageProcess_thread.Start();
@@ -84,6 +85,7 @@ namespace YuhanTalk
             // 큐에 메시지가 있다는거를 알려줌
             lock (lockObject) { Monitor.Pulse(lockObject); }
         }
+
         private void MessageProcess()
         {
             while (true)
