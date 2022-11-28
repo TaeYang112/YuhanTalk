@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using YuhanTalk.Screen;
 using YuhanTalkModule;
 
 namespace YuhanTalk
@@ -27,9 +28,14 @@ namespace YuhanTalk
                 switch (protocol)
                 {
                     // 서버로 부터 로그인 결과 수신
-                    case Protocols.RES_LOGIN:
+                    case Protocols.S_RES_LOGIN:
                         {
                             ReceiveLoginResult(converter);
+                        }
+                        break;
+                    case Protocols.S_RES_SIGN_UP:
+                        {
+                            ReceiveSignUpResult(converter);
                         }
                         break;
                     // 클라이언트가 접속중인지 확인하기 위해 서버가 보내는 메시지
@@ -52,18 +58,33 @@ namespace YuhanTalk
 
             private void ReceiveLoginResult(MessageConverter converter)
             {
-                int result = converter.NextByte();
+                bool result = converter.NextBool();
                 
                 // 로그인에 성공
-                if(result == LoginResult.SUCCESS)
+                if(result)
                 {
                     Console.WriteLine("로긴 성공");
+                    talkManager.MainForm.ChangeScreen(new YuhanTalkScreen(talkManager.MainForm));
                 }
                 else
                 {
                     Console.WriteLine("로긴 실패");
                 }
             }
+
+            private void ReceiveSignUpResult(MessageConverter converter)
+            {
+                int result = converter.NextInt();
+
+                // 로그인에 성공
+                switch(result)
+                {
+                    case 0:
+                        talkManager.MainForm.ChangeScreen(new LoginScreen(talkManager.MainForm));
+                        break;
+                }
+            }
+
 
             public void Error(MessageConverter converter)
             {

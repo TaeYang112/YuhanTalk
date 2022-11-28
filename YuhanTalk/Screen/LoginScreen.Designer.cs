@@ -31,7 +31,7 @@
             this.tb_Pw = new System.Windows.Forms.TextBox();
             this.tb_Id = new System.Windows.Forms.TextBox();
             this.btn_login = new System.Windows.Forms.Button();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.lklbl_GoToSignUp = new System.Windows.Forms.LinkLabel();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
@@ -59,19 +59,20 @@
             this.btn_login.UseVisualStyleBackColor = true;
             this.btn_login.Click += new System.EventHandler(this.btn_login_Click);
             // 
-            // linkLabel1
+            // lklbl_GoToSignUp
             // 
-            this.linkLabel1.ActiveLinkColor = System.Drawing.Color.Black;
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            this.linkLabel1.LinkColor = System.Drawing.Color.Black;
-            this.linkLabel1.Location = new System.Drawing.Point(99, 526);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(55, 15);
-            this.linkLabel1.TabIndex = 2;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "회원가입";
-            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.Black;
+            this.lklbl_GoToSignUp.ActiveLinkColor = System.Drawing.Color.Black;
+            this.lklbl_GoToSignUp.AutoSize = true;
+            this.lklbl_GoToSignUp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.lklbl_GoToSignUp.LinkColor = System.Drawing.Color.Black;
+            this.lklbl_GoToSignUp.Location = new System.Drawing.Point(99, 526);
+            this.lklbl_GoToSignUp.Name = "lklbl_GoToSignUp";
+            this.lklbl_GoToSignUp.Size = new System.Drawing.Size(55, 15);
+            this.lklbl_GoToSignUp.TabIndex = 2;
+            this.lklbl_GoToSignUp.TabStop = true;
+            this.lklbl_GoToSignUp.Text = "회원가입";
+            this.lklbl_GoToSignUp.VisitedLinkColor = System.Drawing.Color.Black;
+            this.lklbl_GoToSignUp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lklbl_GoToSignUp_LinkClicked);
             // 
             // linkLabel2
             // 
@@ -93,7 +94,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.linkLabel2);
-            this.Controls.Add(this.linkLabel1);
+            this.Controls.Add(this.lklbl_GoToSignUp);
             this.Controls.Add(this.btn_login);
             this.Controls.Add(this.tb_Id);
             this.Controls.Add(this.tb_Pw);
@@ -109,7 +110,7 @@
         private TextBox tb_Pw;
         private TextBox tb_Id;
         private Button btn_login;
-        private LinkLabel linkLabel1;
+        private LinkLabel lklbl_GoToSignUp;
         private LinkLabel linkLabel2;
     }
 }

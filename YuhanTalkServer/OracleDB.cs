@@ -62,6 +62,31 @@ namespace YuhanTalkServer
             return info;
         }
 
+        // 0 : 성공, 그 외 에러
+        // 1 : 무결성,  12899 : 길이 초과,  1400 : NULL
+        public int SignUpProcess(string id, string pw, string name)
+        {
+            LoginInfo info = new LoginInfo();
+            info.Empty = true;
+
+            string query = $"insert into userInfo values('{id}','{pw}','{name}')";
+
+            try
+            {
+                using (OracleCommand cmd = new OracleCommand(query, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (OracleException ex)
+            {
+                return ex.Number;
+            }
+
+            return 0;
+        }
+
+
         public struct LoginInfo
         {
             public bool Empty;

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using YuhanTalkModule;
 using YuhanTalkServer.Client;
-using static YuhanTalkServer.OracleDB;
+using YuhanTalkServer;
 
 namespace YuhanTalkServer
 {
@@ -25,7 +26,7 @@ namespace YuhanTalkServer
             byte protocol = converter.Protocol;
             switch (protocol)
             {
-                case Protocols.REQ_LOGIN:
+                case Protocols.C_REQ_LOGIN:
                     {
                         LoginProcess(client, converter);
                     }
@@ -36,12 +37,16 @@ namespace YuhanTalkServer
                         Console.WriteLine(s);
                     }
                     break;
+                case Protocols.C_REQ_SIGN_UP:
+                    {
+                        SignUpProcess(client, converter);
+                    }
+                    break;
                 default:
                     Console.WriteLine("에러 프로토콜 : " + protocol);
                     break;
 
             }
-            
         }
 
         private void LoginProcess(ClientUser client, MessageConverter convert)
@@ -49,24 +54,39 @@ namespace YuhanTalkServer
             string Id = convert.NextString();
             string Pw = convert.NextString();
 
-            LoginInfo info = program.OracleDB.GetLoginInfo(Id, Pw);
+            OracleDB.LoginInfo info = program.OracleDB.GetLoginInfo(Id, Pw);
 
-            MessageGenerator generator = new MessageGenerator(Protocols.RES_LOGIN);
+            MessageGenerator generator = new MessageGenerator(Protocols.S_RES_LOGIN);
 
             // ID와 비번이 같은 데이터가 있다면
             if(info.Empty == false)
             {
-                generator.AddByte(LoginResult.SUCCESS);
+                generator.AddBool(true);
                 generator.AddString(info.Name);
             }
             else
             {
-                generator.AddByte(LoginResult.FAIL);
+                generator.AddBool(false);
             }
 
             // 클라이언트에게 전송
             program.SendMessage(generator.Generate(), client);
         }
-       
+
+        private void SignUpProcess(ClientUser client, MessageConverter converter)
+        {
+            string id = converter.NextString();
+            string pw = converter.NextString();
+            string name = converter.NextString();
+
+            int result = program.OracleDB.SignUpProcess(id, pw, name);
+            
+            MessageGenerator generator = new MessageGenerator(Protocols.S_RES_SIGN_UP);
+            generator.AddInt(result);
+
+            program.SendMessage(generator.Generate(), client);
+        }
+
+
     }
 }

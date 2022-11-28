@@ -23,11 +23,17 @@ namespace YuhanTalk.Screen
         // 로그인 버튼 클릭
         private void btn_login_Click(object sender, EventArgs e)
         {
-            MessageGenerator generator = new MessageGenerator(Protocols.REQ_LOGIN);
+            MessageGenerator generator = new MessageGenerator(Protocols.C_REQ_LOGIN);
             generator.AddString(tb_Id.Text);
             generator.AddString(tb_Pw.Text);
 
             mainForm.YuhanTalkManager.SendMessage(generator.Generate());
         }
+
+        private void lklbl_GoToSignUp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            mainForm.ChangeScreen(new SignUpScreen(mainForm));
+        }
+
     }
 }

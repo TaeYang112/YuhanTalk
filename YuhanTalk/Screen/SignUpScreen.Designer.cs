@@ -28,66 +28,77 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.tb_ID = new System.Windows.Forms.TextBox();
+            this.tb_Password = new System.Windows.Forms.TextBox();
+            this.tb_PasswordCheck = new System.Windows.Forms.TextBox();
+            this.btn_SignUp = new System.Windows.Forms.Button();
+            this.lklbl_GoToLogin = new System.Windows.Forms.LinkLabel();
+            this.tb_Name = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // textBox1
+            // tb_ID
             // 
-            this.textBox1.Location = new System.Drawing.Point(94, 192);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(173, 23);
-            this.textBox1.TabIndex = 0;
+            this.tb_ID.Location = new System.Drawing.Point(94, 192);
+            this.tb_ID.Name = "tb_ID";
+            this.tb_ID.Size = new System.Drawing.Size(173, 23);
+            this.tb_ID.TabIndex = 0;
             // 
-            // textBox2
+            // tb_Password
             // 
-            this.textBox2.Location = new System.Drawing.Point(94, 239);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(173, 23);
-            this.textBox2.TabIndex = 1;
+            this.tb_Password.Location = new System.Drawing.Point(94, 227);
+            this.tb_Password.Name = "tb_Password";
+            this.tb_Password.Size = new System.Drawing.Size(173, 23);
+            this.tb_Password.TabIndex = 1;
             // 
-            // textBox3
+            // tb_PasswordCheck
             // 
-            this.textBox3.Location = new System.Drawing.Point(94, 286);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(173, 23);
-            this.textBox3.TabIndex = 2;
+            this.tb_PasswordCheck.Location = new System.Drawing.Point(94, 256);
+            this.tb_PasswordCheck.Name = "tb_PasswordCheck";
+            this.tb_PasswordCheck.Size = new System.Drawing.Size(173, 23);
+            this.tb_PasswordCheck.TabIndex = 2;
             // 
-            // button1
+            // btn_SignUp
             // 
-            this.button1.Location = new System.Drawing.Point(94, 331);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(173, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btn_SignUp.Location = new System.Drawing.Point(94, 331);
+            this.btn_SignUp.Name = "btn_SignUp";
+            this.btn_SignUp.Size = new System.Drawing.Size(173, 23);
+            this.btn_SignUp.TabIndex = 3;
+            this.btn_SignUp.Text = "회원가입";
+            this.btn_SignUp.UseVisualStyleBackColor = true;
+            this.btn_SignUp.Click += new System.EventHandler(this.btn_SignUp_Click);
             // 
-            // linkLabel1
+            // lklbl_GoToLogin
             // 
-            this.linkLabel1.ActiveLinkColor = System.Drawing.Color.Black;
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            this.linkLabel1.LinkColor = System.Drawing.Color.Black;
-            this.linkLabel1.Location = new System.Drawing.Point(136, 458);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(107, 15);
-            this.linkLabel1.TabIndex = 4;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "처음으로 돌아가기";
-            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.Black;
+            this.lklbl_GoToLogin.ActiveLinkColor = System.Drawing.Color.Black;
+            this.lklbl_GoToLogin.AutoSize = true;
+            this.lklbl_GoToLogin.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.lklbl_GoToLogin.LinkColor = System.Drawing.Color.Black;
+            this.lklbl_GoToLogin.Location = new System.Drawing.Point(136, 458);
+            this.lklbl_GoToLogin.Name = "lklbl_GoToLogin";
+            this.lklbl_GoToLogin.Size = new System.Drawing.Size(107, 15);
+            this.lklbl_GoToLogin.TabIndex = 4;
+            this.lklbl_GoToLogin.TabStop = true;
+            this.lklbl_GoToLogin.Text = "처음으로 돌아가기";
+            this.lklbl_GoToLogin.VisitedLinkColor = System.Drawing.Color.Black;
+            this.lklbl_GoToLogin.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lklbl_GoToLogin_LinkClicked);
+            // 
+            // tb_Name
+            // 
+            this.tb_Name.Location = new System.Drawing.Point(94, 285);
+            this.tb_Name.Name = "tb_Name";
+            this.tb_Name.Size = new System.Drawing.Size(173, 23);
+            this.tb_Name.TabIndex = 5;
             // 
             // SignUpScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.linkLabel1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.tb_Name);
+            this.Controls.Add(this.lklbl_GoToLogin);
+            this.Controls.Add(this.btn_SignUp);
+            this.Controls.Add(this.tb_PasswordCheck);
+            this.Controls.Add(this.tb_Password);
+            this.Controls.Add(this.tb_ID);
             this.Name = "SignUpScreen";
             this.Size = new System.Drawing.Size(360, 590);
             this.ResumeLayout(false);
@@ -97,10 +108,11 @@
 
         #endregion
 
-        private TextBox textBox1;
-        private TextBox textBox2;
-        private TextBox textBox3;
-        private Button button1;
-        private LinkLabel linkLabel1;
+        private TextBox tb_ID;
+        private TextBox tb_Password;
+        private TextBox tb_PasswordCheck;
+        private Button btn_SignUp;
+        private LinkLabel lklbl_GoToLogin;
+        private TextBox tb_Name;
     }
 }
