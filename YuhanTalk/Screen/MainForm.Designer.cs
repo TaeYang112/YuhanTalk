@@ -1,4 +1,6 @@
-﻿namespace YuhanTalk.Screen
+﻿using YuhanTalk.CustomControl;
+
+namespace YuhanTalk.Screen
 {
     partial class MainForm
     {
@@ -29,7 +31,7 @@
         private void InitializeComponent()
         {
             this.pnl_Screen = new System.Windows.Forms.Panel();
-            this.btn_ExitProgram = new System.Windows.Forms.Button();
+            this.btn_ExitProgram = new CustomButton();
             this.SuspendLayout();
             // 
             // pnl_Screen
@@ -76,6 +78,6 @@
 
         #endregion
         private Panel pnl_Screen;
-        private Button btn_ExitProgram;
+        private CustomButton btn_ExitProgram;
     }
 }

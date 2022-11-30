@@ -28,22 +28,91 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.lbl_title = new System.Windows.Forms.Label();
+            this.lbl_context = new System.Windows.Forms.Label();
+            this.lbl_time = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Image = global::YuhanTalk.Properties.Resources.profile;
+            this.pictureBox1.Location = new System.Drawing.Point(10, 10);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(50, 50);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.ChattingRoom_Click);
+            this.pictureBox1.MouseEnter += new System.EventHandler(this.ChattingRoom_MouseEnter);
+            this.pictureBox1.MouseLeave += new System.EventHandler(this.ChattingRoom_MouseLeave);
+            // 
+            // lbl_title
+            // 
+            this.lbl_title.AutoSize = true;
+            this.lbl_title.BackColor = System.Drawing.Color.Transparent;
+            this.lbl_title.Font = new System.Drawing.Font("맑은 고딕", 8.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lbl_title.Location = new System.Drawing.Point(66, 10);
+            this.lbl_title.Name = "lbl_title";
+            this.lbl_title.Size = new System.Drawing.Size(43, 15);
+            this.lbl_title.TabIndex = 1;
+            this.lbl_title.Text = "방제목";
+            this.lbl_title.Click += new System.EventHandler(this.ChattingRoom_Click);
+            this.lbl_title.MouseEnter += new System.EventHandler(this.ChattingRoom_MouseEnter);
+            this.lbl_title.MouseLeave += new System.EventHandler(this.ChattingRoom_MouseLeave);
+            // 
+            // lbl_context
+            // 
+            this.lbl_context.BackColor = System.Drawing.Color.Transparent;
+            this.lbl_context.Location = new System.Drawing.Point(66, 27);
+            this.lbl_context.Name = "lbl_context";
+            this.lbl_context.Size = new System.Drawing.Size(175, 33);
+            this.lbl_context.TabIndex = 2;
+            this.lbl_context.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbl_context.Click += new System.EventHandler(this.ChattingRoom_Click);
+            this.lbl_context.MouseEnter += new System.EventHandler(this.ChattingRoom_MouseEnter);
+            this.lbl_context.MouseLeave += new System.EventHandler(this.ChattingRoom_MouseLeave);
+            // 
+            // lbl_time
+            // 
+            this.lbl_time.BackColor = System.Drawing.Color.Transparent;
+            this.lbl_time.Location = new System.Drawing.Point(249, 18);
+            this.lbl_time.Name = "lbl_time";
+            this.lbl_time.Size = new System.Drawing.Size(41, 23);
+            this.lbl_time.TabIndex = 3;
+            this.lbl_time.Click += new System.EventHandler(this.ChattingRoom_Click);
+            this.lbl_time.MouseEnter += new System.EventHandler(this.ChattingRoom_MouseEnter);
+            this.lbl_time.MouseLeave += new System.EventHandler(this.ChattingRoom_MouseLeave);
             // 
             // ChattingRoom
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(248)))), ((int)(((byte)(255)))));
+            this.Controls.Add(this.lbl_time);
+            this.Controls.Add(this.lbl_context);
+            this.Controls.Add(this.lbl_title);
+            this.Controls.Add(this.pictureBox1);
+            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ChattingRoom";
             this.Size = new System.Drawing.Size(290, 70);
             this.Load += new System.EventHandler(this.ChattingRoom_Load);
+            this.Click += new System.EventHandler(this.ChattingRoom_Click);
             this.MouseEnter += new System.EventHandler(this.ChattingRoom_MouseEnter);
             this.MouseLeave += new System.EventHandler(this.ChattingRoom_MouseLeave);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
+
+        private PictureBox pictureBox1;
+        private Label lbl_title;
+        private Label lbl_context;
+        private Label lbl_time;
     }
 }

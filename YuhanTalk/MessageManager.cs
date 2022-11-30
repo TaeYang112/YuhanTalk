@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using YuhanTalk.CustomControl;
 using YuhanTalk.Screen;
 using YuhanTalkModule;
 
@@ -33,9 +34,16 @@ namespace YuhanTalk
                             ReceiveLoginResult(converter);
                         }
                         break;
+                    // 회원가입 결과 수신
                     case Protocols.S_RES_SIGN_UP:
                         {
                             ReceiveSignUpResult(converter);
+                        }
+                        break;
+                    // 방 리스트 수신
+                    case Protocols.S_RES_ROOM_LIST:
+                        {
+                            ReceiveRoomInfo(converter);
                         }
                         break;
                     // 클라이언트가 접속중인지 확인하기 위해 서버가 보내는 메시지
@@ -85,6 +93,31 @@ namespace YuhanTalk
                 }
             }
 
+            private void ReceiveRoomInfo(MessageConverter converter)
+            {
+                int roomId = converter.NextInt();
+                string roomName = converter.NextString();
+
+                // 컨트롤 검색
+                FlowLayoutPanel? fl = talkManager.MainForm.Controls.Find("fl_ChattingList", true).FirstOrDefault() as FlowLayoutPanel;
+
+                // 유효하다면
+                if(fl != null)
+                {
+                    // 채팅창 만듬
+                    ChattingRoom cr = new ChattingRoom(talkManager.MainForm, roomId);
+                    cr.SetTitle(roomName);
+
+                    // 추가
+                    fl.Invoke(new Action(() =>
+                    {
+                        fl.Controls.Add(cr);
+                    }));
+                    
+                    
+                }
+
+            }
 
             public void Error(MessageConverter converter)
             {

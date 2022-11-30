@@ -5,6 +5,7 @@ using System.Drawing;
 using YuhanTalkModule;
 using YuhanTalkServer.Client;
 using YuhanTalkServer;
+using System.Data;
 
 namespace YuhanTalkServer
 {
@@ -42,6 +43,11 @@ namespace YuhanTalkServer
                         SignUpProcess(client, converter);
                     }
                     break;
+                case Protocols.C_REQ_ROOM_LIST:
+                    {
+                        ResponseRoomList(client, converter);
+                    }
+                    break;
                 default:
                     Console.WriteLine("에러 프로토콜 : " + protocol);
                     break;
@@ -63,6 +69,11 @@ namespace YuhanTalkServer
             {
                 generator.AddBool(true);
                 generator.AddString(info.Name);
+
+                // 게스트에서 로그인으로 옮김
+                client.Login(info.Id, info.Name);
+                program.guestClientManager.RemoveClient(client);
+                program.clientManager.AddClient(client);
             }
             else
             {
@@ -85,6 +96,47 @@ namespace YuhanTalkServer
             generator.AddInt(result);
 
             program.SendMessage(generator.Generate(), client);
+        }
+
+        private void ResponseRoomList(ClientUser client, MessageConverter converter)
+        {
+            // 자신이 참가하고 있는 방 검색
+            string query = $"select * from Participant WHERE user_ID = '{client.ID}'";
+            DataSet ds = program.OracleDB.ExecuteDataAdt(query);
+
+            if (ds.Tables.Count < 0) return;
+
+
+            foreach(var item in ds.Tables[0].Rows)
+            {
+                DataRow dr = (item as DataRow)!;
+                int RoomId = Convert.ToInt32(dr[0]);
+
+                // 자신이 참가한 방에 있는 사람 검색
+                string query2 = $"select user_ID from Participant where room_ID ={RoomId}";
+
+                DataSet ds2 = program.OracleDB.ExecuteDataAdt(query2);
+
+                // 방 제목
+                string RoomName = "";
+
+                // 참가자의 이름으로 방제목 설정함
+                foreach(var item2 in ds2.Tables[0].Rows)
+                {
+                    DataRow dr2 = (item2 as DataRow)!;
+                    if (RoomName.Length != 0) RoomName += ", ";
+
+                    RoomName += program.OracleDB.GetName(dr2[0].ToString()!);
+                }
+
+                // 클라이언트에게 보낼 메시지 생성
+                MessageGenerator generator = new MessageGenerator(Protocols.S_RES_ROOM_LIST);
+                generator.AddInt(RoomId);
+                generator.AddString(RoomName);
+
+                // 전송
+                program.SendMessage(generator.Generate(),client);
+            }
         }
 
 

@@ -37,6 +37,22 @@ namespace YuhanTalkServer
             }
         }
 
+        public DataSet ExecuteDataAdt(string query)
+        {
+            DataSet ds = new DataSet();
+            try {
+                using (OracleDataAdapter cmd = new OracleDataAdapter(query,conn))
+                {
+                    cmd.Fill(ds);
+                }
+            }
+
+            catch (Exception ex)
+            {
+            }
+            return ds;
+        }
+
 
         public LoginInfo GetLoginInfo(string id, string pw)
         {
@@ -86,6 +102,28 @@ namespace YuhanTalkServer
             return 0;
         }
 
+        public string GetName(string id)
+        {
+            string query = $"select Name from userInfo where id = '{id}'";
+            try
+            {
+                OracleDataReader dr;
+                using (OracleCommand cmd = new OracleCommand(query, conn))
+                {
+                    dr = cmd.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        return dr[0].ToString()!;
+                    }
+                }
+            }
+            catch (OracleException ex)
+            {
+                Console.WriteLine(ex.Message) ;
+            }
+            return "";
+        }
+
 
         public struct LoginInfo
         {
@@ -94,6 +132,8 @@ namespace YuhanTalkServer
             public string Password;
             public string Name;
         }
+
+
 
     }
 }

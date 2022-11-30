@@ -17,11 +17,19 @@ namespace YuhanTalk.Screen
         {
             InitializeComponent();
             this.mainForm = mainForm;
+            Name = "YuhanTalk";
+            
         }
 
         private void YuhanTalkScreen_Load(object sender, EventArgs e)
         {
+            ChangeScreen(new RoomsScreen(mainForm));
+        }
 
+        public void ChangeScreen(UserControl control)
+        {
+            pnl_screen.Controls.Clear();
+            pnl_screen.Controls.Add(control);
         }
     }
 }

@@ -51,7 +51,6 @@ namespace YuhanTalkServer
             while (true)
             {
                 string[] command = Console.ReadLine()!.Split(' ');
-                program.server.server.Stop();
                 try
                 {
                     switch (command[0])

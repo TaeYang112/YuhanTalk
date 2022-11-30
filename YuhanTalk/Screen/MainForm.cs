@@ -30,6 +30,7 @@ namespace YuhanTalk.Screen
 
             btn_ExitProgram.BringToFront();
 
+
             UserControl userControl = new LoginScreen(this);
             ChangeScreen(userControl);
         }
