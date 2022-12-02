@@ -43,6 +43,7 @@
             // 
             // pnl_screen
             // 
+            this.pnl_screen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(253)))), ((int)(((byte)(255)))));
             this.pnl_screen.Location = new System.Drawing.Point(70, 0);
             this.pnl_screen.Margin = new System.Windows.Forms.Padding(0);
             this.pnl_screen.Name = "pnl_screen";

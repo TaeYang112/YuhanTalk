@@ -52,6 +52,11 @@ namespace YuhanTalk
                             // 클라이언트는 반응이 없어도 됨
                         }
                         break;
+                    case Protocols.S_MSG:
+                        {
+                            Console.WriteLine("수신");
+                        }
+                        break;
                     case Protocols.S_ERROR:
                         {
                             Error(converter);
@@ -117,6 +122,14 @@ namespace YuhanTalk
                     
                 }
 
+            }
+
+            private void ReceiveMessage(MessageConverter converter)
+            {
+                int roomID = converter.NextInt();
+                string message = converter.NextString();
+                string name = converter.NextString();
+                string time = converter.NextString();
             }
 
             public void Error(MessageConverter converter)

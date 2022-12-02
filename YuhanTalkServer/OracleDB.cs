@@ -47,7 +47,7 @@ namespace YuhanTalkServer
                 }
             }
 
-            catch (Exception ex)
+            catch
             {
             }
             return ds;

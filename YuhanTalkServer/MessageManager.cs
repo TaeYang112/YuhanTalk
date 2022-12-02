@@ -34,8 +34,7 @@ namespace YuhanTalkServer
                     break;
                 case Protocols.C_MSG:
                     {
-                        string s = converter.NextString();
-                        Console.WriteLine(s);
+                        RecieveMessage(client, converter);
                     }
                     break;
                 case Protocols.C_REQ_SIGN_UP:
@@ -104,9 +103,6 @@ namespace YuhanTalkServer
             string query = $"select * from Participant WHERE user_ID = '{client.ID}'";
             DataSet ds = program.OracleDB.ExecuteDataAdt(query);
 
-            if (ds.Tables.Count < 0) return;
-
-
             foreach(var item in ds.Tables[0].Rows)
             {
                 DataRow dr = (item as DataRow)!;
@@ -136,6 +132,40 @@ namespace YuhanTalkServer
 
                 // 전송
                 program.SendMessage(generator.Generate(),client);
+            }
+        }
+
+        private void RecieveMessage(ClientUser clientUser, MessageConverter converter)
+        {
+            int roomID = converter.NextInt();
+            string message = converter.NextString();
+
+            // 해당 방번호에 있는 유저 검색
+            string query = $"select user_ID from Participant WHERE room_ID = {roomID} AND USER_ID <> '{clientUser.ID}'";
+            DataSet ds = program.OracleDB.ExecuteDataAdt(query);
+
+            // 유저에게 보낼 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.S_MSG);
+            generator.AddInt(roomID);
+            generator.AddString(message);
+            generator.AddString(clientUser.Name);
+            generator.AddString(DateTime.Now.ToString("tt h:mm"));
+
+            // 각 유저 아이디가 있는 행 반복
+            foreach (var item in ds.Tables[0].Rows)
+            {
+                DataRow dr = (item as DataRow)!;
+                string userID = Convert.ToString(dr[0])!;
+
+                // 해당 방에 있는 유저가 접속중인지 검색
+                ClientUser? user;
+                program.clientManager.ClientDic.TryGetValue(userID, out user);
+                // 접속중이라면
+                if (user != null)
+                {
+                    program.SendMessage(generator.Generate(), user);
+                }
+                
             }
         }
 

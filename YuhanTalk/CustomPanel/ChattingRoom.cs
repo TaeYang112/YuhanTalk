@@ -63,8 +63,8 @@ namespace YuhanTalk.CustomControl
         {
             if(mainForm != null)
             {
-                ChattingRoom_Form form =  new ChattingRoom_Form(mainForm);
-                form.ShowDialog();  
+                ChattingRoom_Form form =  new ChattingRoom_Form(mainForm.YuhanTalkManager,1);
+                form.Show();  
             }
         }
     }

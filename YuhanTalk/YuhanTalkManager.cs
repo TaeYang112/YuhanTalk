@@ -11,8 +11,6 @@ namespace YuhanTalk
 {
     public partial class YuhanTalkManager
     {
-        // 자신 싱글톤 객체
-        //static YuhanTalkManager? talkManager = null;
 
         // 에러로 인한 프로그램 종료 플래그 변수
         private bool bExitReady = false;
@@ -37,16 +35,8 @@ namespace YuhanTalk
         // 메시지가 없으면 대기하기 위한 락 오브젝트
         object lockObject = new object();
 
-        /*
-        public static YuhanTalkManager GetInstance()
-        {
-            if (talkManager == null)
-            {
-                talkManager = new YuhanTalkManager();
-            }
-            return talkManager;
-        }
-        */
+
+        
         public YuhanTalkManager(MainForm form)
         {
             this.MainForm = form;
