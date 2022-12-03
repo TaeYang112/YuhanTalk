@@ -53,6 +53,24 @@ namespace YuhanTalkServer
             return ds;
         }
 
+        public int InsertData(string query)
+        {
+            try
+            {
+                using (OracleCommand cmd = new OracleCommand(query, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (OracleException ex)
+            {
+                Console.WriteLine(ex);
+                return ex.Number;
+            }
+
+            return 0;
+        }
+
 
         public LoginInfo GetLoginInfo(string id, string pw)
         {

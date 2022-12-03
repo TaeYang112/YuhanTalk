@@ -37,9 +37,6 @@ namespace YuhanTalkServer
         // 서버와 클라이언트가 계속 연결되어있는지 확인하기 위해 일정시간마다 가짜 메시지를 보냄
         private Timer HeartBeatTimer;
 
-        // 하나의 클라이언트가 여러번 나가는거를 막기위한 세마포
-        private Semaphore sema_ClientLeave;
-
         // 메시지가 없으면 대기하기 위한 락 오브젝트
         object lockObject = new object();
 
@@ -127,11 +124,10 @@ namespace YuhanTalkServer
             server = new MyServer();
             server.onClientJoin += new ClientJoinEventHandler(ClientJoin);
             server.onDataRecieve += new DataRecieveEventHandler(onDataRecieve);
+            server.onSendError += new SendErrorEventHandler(onSendError);
 
             clientManager = new ClientManager();
             guestClientManager = new GuestClientManager();
-
-            sema_ClientLeave = new Semaphore(1, 1);
 
             messageQueue = new ConcurrentQueue<KeyValuePair<ClientUser, byte[]>>();
             messageProcess_thread = new Thread(MessageProcess);
@@ -268,6 +264,17 @@ namespace YuhanTalkServer
             messageQueue.Enqueue(new KeyValuePair<ClientUser, byte[]>(ClientUser!, message));
 
             lock (lockObject) { Monitor.Pulse(lockObject); }
+        }
+
+        // 전송중 에러 발생
+        private void onSendError(MyServer.AsyncResultParam param)
+        {
+            ClientUser? oldUser = param.returnObj as ClientUser;
+
+            if(oldUser != null)
+            {
+                ClientLeave(oldUser);
+            }
         }
         #endregion
     }

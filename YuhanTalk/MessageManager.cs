@@ -52,9 +52,16 @@ namespace YuhanTalk
                             // 클라이언트는 반응이 없어도 됨
                         }
                         break;
+                    // 다른 클라이언트가 보낸 메시지 수신
                     case Protocols.S_MSG:
                         {
-                            Console.WriteLine("수신");
+                            ReceiveMessage(converter);
+                        }
+                        break;
+                    // 과거 주고 받은 메시지 수신
+                    case Protocols.S_RES_CHAT_LIST:
+                        {
+                            ReceiveChatList(converter);
                         }
                         break;
                     case Protocols.S_ERROR:
@@ -124,12 +131,60 @@ namespace YuhanTalk
 
             }
 
+            // 메시지 수신
             private void ReceiveMessage(MessageConverter converter)
             {
                 int roomID = converter.NextInt();
                 string message = converter.NextString();
                 string name = converter.NextString();
                 string time = converter.NextString();
+
+                ChattingRoom_Form? form;
+
+                // 해당 방번호에 해당하는 폼을 찾음
+                talkManager.ChattingForm_Dic.TryGetValue(roomID, out form);
+
+                if(form != null)
+                {
+                    form.Invoke(new Action(() =>
+                    {
+                        form.AddLChat(message, name, time);
+                    }
+                    ));
+                }
+            }
+
+            // 기존 DB에 있던 메시지 수신 ( 과거 메시지 )
+            private void ReceiveChatList(MessageConverter converter)
+            {
+                int roomID = converter.NextInt();
+                string name = converter.NextString();
+                string message = converter.NextString();
+                string time = converter.NextString();
+
+                bool isMyMsg = converter.NextBool();
+
+                ChattingRoom_Form? form;
+
+                // 해당 방번호에 해당하는 폼을 찾음
+                talkManager.ChattingForm_Dic.TryGetValue(roomID, out form);
+
+                if (form != null)
+                {
+                    form.Invoke(new Action(() =>
+                    {
+                        if (isMyMsg)
+                        {
+                            form.AddRChat(message, time);
+                        }
+                        else
+                        {
+                            form.AddLChat(message, name, time);
+                        }
+                    }
+                    ));
+                }
+
             }
 
             public void Error(MessageConverter converter)

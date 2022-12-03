@@ -31,7 +31,7 @@ namespace YuhanTalk.Screen
         private void InitializeComponent()
         {
             this.pnl_Screen = new System.Windows.Forms.Panel();
-            this.btn_ExitProgram = new CustomButton();
+            this.btn_ExitProgram = new YuhanTalk.CustomControl.CustomButton();
             this.SuspendLayout();
             // 
             // pnl_Screen

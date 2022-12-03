@@ -14,6 +14,7 @@ namespace YuhanTalk.CustomControl
 {
     public partial class ChattingRoom : UserControl
     {
+
         public int RoomID { get; }
         private MainForm? mainForm;
         public ChattingRoom()
@@ -62,9 +63,28 @@ namespace YuhanTalk.CustomControl
         private void ChattingRoom_Click(object sender, EventArgs e)
         {
             if(mainForm != null)
-            {
-                ChattingRoom_Form form =  new ChattingRoom_Form(mainForm.YuhanTalkManager,1);
-                form.Show();  
+            { 
+                ChattingRoom_Form form = new ChattingRoom_Form(mainForm.YuhanTalkManager, RoomID);
+                bool result =  mainForm.YuhanTalkManager.ChattingForm_Dic.TryAdd(RoomID, form);
+
+                if(result == true)
+                {
+                    form.Show();
+                    form.LoadChatHistory();
+                }
+                else
+                {
+                    form.Dispose();
+
+                    ChattingRoom_Form? oldForm;
+                    mainForm.YuhanTalkManager.ChattingForm_Dic.TryGetValue(RoomID, out oldForm);
+
+                    if(oldForm != null)
+                    {
+                        oldForm.Activate();
+                        oldForm.BringToFront();
+                    }
+                }
             }
         }
     }

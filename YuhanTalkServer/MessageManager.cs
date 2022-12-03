@@ -6,6 +6,7 @@ using YuhanTalkModule;
 using YuhanTalkServer.Client;
 using YuhanTalkServer;
 using System.Data;
+using Oracle.ManagedDataAccess.Client;
 
 namespace YuhanTalkServer
 {
@@ -27,24 +28,34 @@ namespace YuhanTalkServer
             byte protocol = converter.Protocol;
             switch (protocol)
             {
+                // 로그인 요청 수신
                 case Protocols.C_REQ_LOGIN:
                     {
                         LoginProcess(client, converter);
                     }
                     break;
+                // 메시지 수신
                 case Protocols.C_MSG:
                     {
                         RecieveMessage(client, converter);
                     }
                     break;
+                // 회원가입 요청 수신
                 case Protocols.C_REQ_SIGN_UP:
                     {
                         SignUpProcess(client, converter);
                     }
                     break;
+                // 방 목록 요청 수신
                 case Protocols.C_REQ_ROOM_LIST:
                     {
                         ResponseRoomList(client, converter);
+                    }
+                    break;
+                // 채팅 목록 수신
+                case Protocols.C_REQ_CHAT_LIST:
+                    {
+                        ResponseChatLIst(client, converter);
                     }
                     break;
                 default:
@@ -132,7 +143,10 @@ namespace YuhanTalkServer
 
                 // 전송
                 program.SendMessage(generator.Generate(),client);
+                
+                ds2.Dispose();
             }
+            ds.Dispose();
         }
 
         private void RecieveMessage(ClientUser clientUser, MessageConverter converter)
@@ -140,16 +154,23 @@ namespace YuhanTalkServer
             int roomID = converter.NextInt();
             string message = converter.NextString();
 
+            // 서버 기준 현재시간 받음
+            DateTime dt = DateTime.Now;
+
+            // 데이터베이스에 채팅을 넣음
+            string query = $"insert into CHATTING(room_id, id, message, time) values({roomID}, '{clientUser.ID}','{message}', to_date('{dt:yyyy/MM/dd HH:mm:ss}','yyyy/mm/dd hh24:mi:ss'))";
+            program.OracleDB.InsertData(query);
+
             // 해당 방번호에 있는 유저 검색
-            string query = $"select user_ID from Participant WHERE room_ID = {roomID} AND USER_ID <> '{clientUser.ID}'";
-            DataSet ds = program.OracleDB.ExecuteDataAdt(query);
+            string query2 = $"select user_ID from Participant WHERE room_ID = {roomID} AND USER_ID <> '{clientUser.ID}'";
+            DataSet ds = program.OracleDB.ExecuteDataAdt(query2);
 
             // 유저에게 보낼 메시지 생성
             MessageGenerator generator = new MessageGenerator(Protocols.S_MSG);
             generator.AddInt(roomID);
             generator.AddString(message);
             generator.AddString(clientUser.Name);
-            generator.AddString(DateTime.Now.ToString("tt h:mm"));
+            generator.AddString(dt.ToString("tt h:mm"));
 
             // 각 유저 아이디가 있는 행 반복
             foreach (var item in ds.Tables[0].Rows)
@@ -163,10 +184,59 @@ namespace YuhanTalkServer
                 // 접속중이라면
                 if (user != null)
                 {
+                    // 서버가 받은 메시지를 보냄
                     program.SendMessage(generator.Generate(), user);
                 }
                 
             }
+            ds.Dispose();
+        }
+
+        // 특정 방에 있는 채팅 내역 송신
+        private void ResponseChatLIst(ClientUser clientUser, MessageConverter converter)
+        {
+            int roomId = converter.NextInt();
+
+            // 해당 방번호에 있는 채팅 검색
+            string query2 = $"select userInfo.id, name, message, to_char(time,'yyyy/mm/dd hh24:mi') from userInfo, chatting where userInfo.ID = Chatting.ID AND room_ID = {roomId} ORDER BY time";
+            DataSet ds = program.OracleDB.ExecuteDataAdt(query2);
+
+            
+
+            // 검색한 채팅 내용들을 요청 클라이언트에게 송신함 
+            foreach (var item in ds.Tables[0].Rows)
+            {
+                DataRow dr = (item as DataRow)!;
+                string userID = Convert.ToString(dr[0])!;
+                string userName = Convert.ToString(dr[1])!;
+                string message = Convert.ToString(dr[2])!;
+                string time = Convert.ToString(dr[3])!;
+
+                // 유저에게 보낼 메시지 생성
+                MessageGenerator generator = new MessageGenerator(Protocols.S_RES_CHAT_LIST);
+                generator.AddInt(roomId);
+                generator.AddString(userName);
+                generator.AddString(message);
+
+                // 시간
+                DateTime dt = DateTime.Parse(time);
+                generator.AddString(dt.ToString("tt h:mm"));
+
+                // 본인 여부
+                if(userID == clientUser.ID)
+                {
+                    generator.AddBool(true);
+                }
+                else
+                {
+                    generator.AddBool(false);
+                }
+
+                // 전송
+                program.SendMessage(generator.Generate(), clientUser);
+
+            }
+            ds.Dispose();
         }
 
 

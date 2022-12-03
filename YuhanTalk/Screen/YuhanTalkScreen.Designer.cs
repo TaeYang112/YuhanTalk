@@ -57,6 +57,7 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(248)))), ((int)(((byte)(255)))));
             this.Controls.Add(this.pnl_screen);
             this.Controls.Add(this.panel1);
+            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "YuhanTalkScreen";
             this.Size = new System.Drawing.Size(360, 590);
             this.Load += new System.EventHandler(this.YuhanTalkScreen_Load);

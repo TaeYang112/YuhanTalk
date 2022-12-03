@@ -35,6 +35,8 @@ namespace YuhanTalk
         // 메시지가 없으면 대기하기 위한 락 오브젝트
         object lockObject = new object();
 
+        // 현재 띄어져 있는 채팅방을 관리하는 폼
+        public Dictionary<int, ChattingRoom_Form> ChattingForm_Dic { get; }
 
         
         public YuhanTalkManager(MainForm form)
@@ -57,6 +59,9 @@ namespace YuhanTalk
 
             // 사용자 캐릭터
             clientUser = new ClientUser();
+
+            // 딕셔너리 초기화
+            ChattingForm_Dic = new Dictionary<int, ChattingRoom_Form>();
 
         }
 

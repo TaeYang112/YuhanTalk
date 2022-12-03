@@ -1,5 +1,5 @@
 ﻿using System.Net.Sockets;
-using YuhanTalkModule;
+
 
 // -----------------
 // ----- 서버 ------
@@ -8,6 +8,7 @@ using YuhanTalkModule;
 namespace YuhanTalkServer.TCP
 {
     public delegate void ClientJoinEventHandler(ClientData newClient);
+    public delegate void SendErrorEventHandler(MyServer.AsyncResultParam asyncResult);
     public delegate void DataRecieveEventHandler(MyServer.AsyncResultParam param, byte[] Message);
     public class MyServer
     {
@@ -22,6 +23,9 @@ namespace YuhanTalkServer.TCP
 
         // 클라이언트로 부터 메시지가 수신되면 연결된 함수 호출
         public event DataRecieveEventHandler? onDataRecieve;
+
+        // 메시지 송신중 에러 발생시 호출
+        public event SendErrorEventHandler? onSendError;
 
         public MyServer()
         {
@@ -103,6 +107,7 @@ namespace YuhanTalkServer.TCP
 
                 if (byteSize == 0)
                 {
+                    onSendError?.Invoke(result);
                     return;
                 }
 
