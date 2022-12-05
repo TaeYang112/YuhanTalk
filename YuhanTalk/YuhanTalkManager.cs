@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using YuhanTalk;
+using YuhanTalk.CustomControl;
 using YuhanTalk.Screen;
 
 namespace YuhanTalk
@@ -38,6 +39,9 @@ namespace YuhanTalk
         // 현재 띄어져 있는 채팅방을 관리하는 폼
         public Dictionary<int, ChattingRoom_Form> ChattingForm_Dic { get; }
 
+        // 채팅방 목록
+        public Dictionary<int, ChattingRoom> ChattingRoom_Dic { get; }
+
         
         public YuhanTalkManager(MainForm form)
         {
@@ -62,6 +66,7 @@ namespace YuhanTalk
 
             // 딕셔너리 초기화
             ChattingForm_Dic = new Dictionary<int, ChattingRoom_Form>();
+            ChattingRoom_Dic = new Dictionary<int, ChattingRoom>();
 
         }
 

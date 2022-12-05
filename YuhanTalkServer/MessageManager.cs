@@ -114,9 +114,8 @@ namespace YuhanTalkServer
             string query = $"select * from Participant WHERE user_ID = '{client.ID}'";
             DataSet ds = program.OracleDB.ExecuteDataAdt(query);
 
-            foreach(var item in ds.Tables[0].Rows)
+            foreach(DataRow dr in ds.Tables[0].Rows)
             {
-                DataRow dr = (item as DataRow)!;
                 int RoomId = Convert.ToInt32(dr[0]);
 
                 // 자신이 참가한 방에 있는 사람 검색
@@ -128,18 +127,33 @@ namespace YuhanTalkServer
                 string RoomName = "";
 
                 // 참가자의 이름으로 방제목 설정함
-                foreach(var item2 in ds2.Tables[0].Rows)
+                foreach(DataRow dr2 in ds2.Tables[0].Rows)
                 {
-                    DataRow dr2 = (item2 as DataRow)!;
                     if (RoomName.Length != 0) RoomName += ", ";
 
                     RoomName += program.OracleDB.GetName(dr2[0].ToString()!);
+                }
+
+                // 해당 방에 마지막으로 보낸 채팅 검색
+                string query3 = $"select message, time from chatting where room_id = {RoomId} ORDER BY TIME DESC";
+
+                DataSet ds3 = program.OracleDB.ExecuteDataAdt(query3);
+
+                string LastMessage = "";
+                string LastTime = "";
+                foreach (DataRow dr3 in ds3.Tables[0].Rows)
+                {
+                    LastMessage = Convert.ToString(dr3[0])!;
+                    LastTime = Convert.ToString(dr3[1])!;
+                    break;
                 }
 
                 // 클라이언트에게 보낼 메시지 생성
                 MessageGenerator generator = new MessageGenerator(Protocols.S_RES_ROOM_LIST);
                 generator.AddInt(RoomId);
                 generator.AddString(RoomName);
+                generator.AddString(LastMessage);
+                generator.AddString(DateTime.Parse(LastTime).ToString("tt h:mm"));
 
                 // 전송
                 program.SendMessage(generator.Generate(),client);

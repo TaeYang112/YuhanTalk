@@ -109,6 +109,8 @@ namespace YuhanTalk
             {
                 int roomId = converter.NextInt();
                 string roomName = converter.NextString();
+                string lastMessage = converter.NextString();
+                string time = converter.NextString();
 
                 // 컨트롤 검색
                 FlowLayoutPanel? fl = talkManager.MainForm.Controls.Find("fl_ChattingList", true).FirstOrDefault() as FlowLayoutPanel;
@@ -119,12 +121,21 @@ namespace YuhanTalk
                     // 채팅창 만듬
                     ChattingRoom cr = new ChattingRoom(talkManager.MainForm, roomId);
                     cr.SetTitle(roomName);
+                    cr.SetTime(time);
+                    cr.SetContext(lastMessage);
 
-                    // 추가
-                    fl.Invoke(new Action(() =>
+                    // 배열에 추가
+                    bool result = talkManager.ChattingRoom_Dic.TryAdd(roomId, cr);
+
+                    // 정상적으로 배열에 추가되었다면 패널에 넣음
+                    if (result == true)
                     {
-                        fl.Controls.Add(cr);
-                    }));
+                        // 추가
+                        fl.Invoke(new Action(() =>
+                        {
+                            fl.Controls.Add(cr);
+                        }));
+                    }
                     
                     
                 }

@@ -34,11 +34,8 @@
             this.pnl_header = new System.Windows.Forms.Panel();
             this.btn_ExitProgram = new YuhanTalk.CustomControl.CustomButton();
             this.fpnl_Chats = new System.Windows.Forms.FlowLayoutPanel();
-            this.rchat1 = new YuhanTalk.CustomControl.Rchat();
-            this.lchat1 = new YuhanTalk.CustomControl.Lchat();
             this.panel1.SuspendLayout();
             this.pnl_header.SuspendLayout();
-            this.fpnl_Chats.SuspendLayout();
             this.SuspendLayout();
             // 
             // tb_InputBox
@@ -118,32 +115,11 @@
             // fpnl_Chats
             // 
             this.fpnl_Chats.AutoScroll = true;
-            this.fpnl_Chats.Controls.Add(this.rchat1);
-            this.fpnl_Chats.Controls.Add(this.lchat1);
             this.fpnl_Chats.Location = new System.Drawing.Point(0, 80);
             this.fpnl_Chats.Margin = new System.Windows.Forms.Padding(0);
             this.fpnl_Chats.Name = "fpnl_Chats";
             this.fpnl_Chats.Size = new System.Drawing.Size(380, 460);
             this.fpnl_Chats.TabIndex = 5;
-            // 
-            // rchat1
-            // 
-            this.rchat1.BackColor = System.Drawing.Color.Transparent;
-            this.rchat1.Location = new System.Drawing.Point(0, 0);
-            this.rchat1.Margin = new System.Windows.Forms.Padding(0);
-            this.rchat1.Name = "rchat1";
-            this.rchat1.Size = new System.Drawing.Size(360, 76);
-            this.rchat1.TabIndex = 0;
-            // 
-            // lchat1
-            // 
-            this.lchat1.BackColor = System.Drawing.Color.Transparent;
-            this.lchat1.Location = new System.Drawing.Point(0, 76);
-            this.lchat1.Margin = new System.Windows.Forms.Padding(0);
-            this.lchat1.MinimumSize = new System.Drawing.Size(360, 0);
-            this.lchat1.Name = "lchat1";
-            this.lchat1.Size = new System.Drawing.Size(360, 78);
-            this.lchat1.TabIndex = 1;
             // 
             // ChattingRoom_Form
             // 
@@ -162,7 +138,6 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.pnl_header.ResumeLayout(false);
-            this.fpnl_Chats.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -173,8 +148,6 @@
         private Panel panel1;
         private Panel pnl_header;
         private FlowLayoutPanel fpnl_Chats;
-        private CustomControl.Rchat rchat1;
-        private CustomControl.Lchat lchat1;
         private CustomControl.CustomButton btn_ExitProgram;
     }
 }

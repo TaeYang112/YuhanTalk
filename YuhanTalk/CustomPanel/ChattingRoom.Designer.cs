@@ -66,9 +66,9 @@
             // lbl_context
             // 
             this.lbl_context.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_context.Location = new System.Drawing.Point(66, 27);
+            this.lbl_context.Location = new System.Drawing.Point(66, 32);
             this.lbl_context.Name = "lbl_context";
-            this.lbl_context.Size = new System.Drawing.Size(175, 33);
+            this.lbl_context.Size = new System.Drawing.Size(150, 17);
             this.lbl_context.TabIndex = 2;
             this.lbl_context.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lbl_context.Click += new System.EventHandler(this.ChattingRoom_Click);
@@ -78,9 +78,10 @@
             // lbl_time
             // 
             this.lbl_time.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_time.Location = new System.Drawing.Point(249, 18);
+            this.lbl_time.ForeColor = System.Drawing.Color.Gray;
+            this.lbl_time.Location = new System.Drawing.Point(222, 18);
             this.lbl_time.Name = "lbl_time";
-            this.lbl_time.Size = new System.Drawing.Size(41, 23);
+            this.lbl_time.Size = new System.Drawing.Size(68, 23);
             this.lbl_time.TabIndex = 3;
             this.lbl_time.Click += new System.EventHandler(this.ChattingRoom_Click);
             this.lbl_time.MouseEnter += new System.EventHandler(this.ChattingRoom_MouseEnter);
