@@ -14,10 +14,11 @@ namespace YuhanTalk
         // 텍스트 박스에 Type your message 문구가 있는지를 구별하는 변수
         private bool ChatFlag = true;
 
-        public ChattingRoom_Form(YuhanTalkManager yuhanTalkManager, int roomID) : this()
+        public ChattingRoom_Form(YuhanTalkManager yuhanTalkManager, int roomID, string title) : this()
         {
             this.yuhanTalkManager = yuhanTalkManager;
             this.roomID = roomID;
+            this.lbl_title.Text = title;
         }
 
         public ChattingRoom_Form()

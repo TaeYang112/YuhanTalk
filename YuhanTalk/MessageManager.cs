@@ -319,7 +319,7 @@ namespace YuhanTalk
                     talkManager.MainForm.BeginInvoke(new Action(() =>
                     {
                     // 방 생성과 동시에 채팅방 폼을 띄움
-                    ChattingRoom_Form form = new ChattingRoom_Form(talkManager, roomID);
+                    ChattingRoom_Form form = new ChattingRoom_Form(talkManager, roomID, roomTitle);
                         bool result = talkManager.ChattingForm_Dic.TryAdd(roomID, form);
 
                     // 위치를 메인 폼 오른쪽으로 함

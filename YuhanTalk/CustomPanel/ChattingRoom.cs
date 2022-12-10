@@ -72,7 +72,7 @@ namespace YuhanTalk.CustomControl
                 if(result == false)
                 {
                     // 채팅창 폼 생성
-                    ChattingRoom_Form form = new ChattingRoom_Form(mainForm.YuhanTalkManager, RoomID);
+                    ChattingRoom_Form form = new ChattingRoom_Form(mainForm.YuhanTalkManager, RoomID,lbl_title.Text);
                     form.Location = new Point(mainForm.Left + mainForm.Width, mainForm.Top);
 
                     // 딕셔너리에 넣고 결과를 받아옴

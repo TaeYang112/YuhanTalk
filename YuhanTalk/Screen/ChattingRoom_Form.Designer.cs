@@ -32,10 +32,13 @@
             this.roundButton1 = new YuhanTalk.CustomControl.RoundButton();
             this.panel1 = new System.Windows.Forms.Panel();
             this.pnl_header = new System.Windows.Forms.Panel();
+            this.lbl_title = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btn_ExitProgram = new YuhanTalk.CustomControl.CustomButton();
             this.fpnl_Chats = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1.SuspendLayout();
             this.pnl_header.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // tb_InputBox
@@ -85,6 +88,8 @@
             // pnl_header
             // 
             this.pnl_header.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
+            this.pnl_header.Controls.Add(this.lbl_title);
+            this.pnl_header.Controls.Add(this.pictureBox1);
             this.pnl_header.Controls.Add(this.btn_ExitProgram);
             this.pnl_header.Location = new System.Drawing.Point(0, 0);
             this.pnl_header.Name = "pnl_header";
@@ -93,6 +98,26 @@
             this.pnl_header.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnl_BorderTop_MouseDown);
             this.pnl_header.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnl_BorderTop_MouseMove);
             this.pnl_header.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnl_BorderTop_MouseUp);
+            // 
+            // lbl_title
+            // 
+            this.lbl_title.AutoSize = true;
+            this.lbl_title.Font = new System.Drawing.Font("맑은 고딕", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lbl_title.Location = new System.Drawing.Point(71, 17);
+            this.lbl_title.Name = "lbl_title";
+            this.lbl_title.Size = new System.Drawing.Size(39, 20);
+            this.lbl_title.TabIndex = 5;
+            this.lbl_title.Text = "제목";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackgroundImage = global::YuhanTalk.Properties.Resources.profile;
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox1.Location = new System.Drawing.Point(15, 15);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(50, 50);
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
             // 
             // btn_ExitProgram
             // 
@@ -140,6 +165,8 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.pnl_header.ResumeLayout(false);
+            this.pnl_header.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -151,5 +178,7 @@
         private Panel pnl_header;
         private FlowLayoutPanel fpnl_Chats;
         private CustomControl.CustomButton btn_ExitProgram;
+        private PictureBox pictureBox1;
+        private Label lbl_title;
     }
 }
