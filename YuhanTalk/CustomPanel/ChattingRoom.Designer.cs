@@ -68,7 +68,7 @@
             this.lbl_context.BackColor = System.Drawing.Color.Transparent;
             this.lbl_context.Location = new System.Drawing.Point(66, 32);
             this.lbl_context.Name = "lbl_context";
-            this.lbl_context.Size = new System.Drawing.Size(150, 17);
+            this.lbl_context.Size = new System.Drawing.Size(130, 17);
             this.lbl_context.TabIndex = 2;
             this.lbl_context.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lbl_context.Click += new System.EventHandler(this.ChattingRoom_Click);
@@ -79,10 +79,11 @@
             // 
             this.lbl_time.BackColor = System.Drawing.Color.Transparent;
             this.lbl_time.ForeColor = System.Drawing.Color.Gray;
-            this.lbl_time.Location = new System.Drawing.Point(222, 18);
+            this.lbl_time.Location = new System.Drawing.Point(196, 18);
             this.lbl_time.Name = "lbl_time";
-            this.lbl_time.Size = new System.Drawing.Size(68, 23);
+            this.lbl_time.Size = new System.Drawing.Size(74, 23);
             this.lbl_time.TabIndex = 3;
+            this.lbl_time.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lbl_time.Click += new System.EventHandler(this.ChattingRoom_Click);
             this.lbl_time.MouseEnter += new System.EventHandler(this.ChattingRoom_MouseEnter);
             this.lbl_time.MouseLeave += new System.EventHandler(this.ChattingRoom_MouseLeave);
@@ -91,14 +92,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(248)))), ((int)(((byte)(255)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(253)))), ((int)(((byte)(255)))));
             this.Controls.Add(this.lbl_time);
             this.Controls.Add(this.lbl_context);
             this.Controls.Add(this.lbl_title);
             this.Controls.Add(this.pictureBox1);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ChattingRoom";
-            this.Size = new System.Drawing.Size(290, 70);
+            this.Size = new System.Drawing.Size(270, 70);
             this.Load += new System.EventHandler(this.ChattingRoom_Load);
             this.Click += new System.EventHandler(this.ChattingRoom_Click);
             this.MouseEnter += new System.EventHandler(this.ChattingRoom_MouseEnter);

@@ -13,17 +13,17 @@ namespace YuhanTalk.Screen
 {
     public partial class SignUpScreen : UserControl
     {
-        private MainForm mainForm;
-        public SignUpScreen(MainForm mainForm)
+        private YuhanTalkManager talkManager;
+        public SignUpScreen(YuhanTalkManager talkManager)
         {
             InitializeComponent();
-            this.mainForm = mainForm;
+            this.talkManager = talkManager;
         }
 
         private void lklbl_GoToLogin_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             
-            mainForm.ChangeScreen(new LoginScreen(mainForm));
+            talkManager.MainForm.ChangeScreen(new LoginScreen(talkManager));
 
         }
 
@@ -34,7 +34,7 @@ namespace YuhanTalk.Screen
             generator.AddString(tb_Password.Text);
             generator.AddString(tb_Name.Text);
 
-            mainForm.YuhanTalkManager.SendMessage(generator.Generate());
+            talkManager.SendMessage(generator.Generate());
         }
     }
 }

@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YuhanTalk", "YuhanTalk\YuhanTalk.csproj", "{C0B4FF70-DE73-4125-8CC1-74D628171A01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YuhanTalk", "YuhanTalk\YuhanTalk.csproj", "{C0B4FF70-DE73-4125-8CC1-74D628171A01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YuhanTalkModule", "YuhanTalkModule\YuhanTalkModule.csproj", "{3714367C-FC8D-48D2-9E43-E2FDC9D54655}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YuhanTalkModule", "YuhanTalkModule\YuhanTalkModule.csproj", "{3714367C-FC8D-48D2-9E43-E2FDC9D54655}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YuhanTalkServer", "YuhanTalkServer\YuhanTalkServer.csproj", "{BACB1CC8-ECCE-4E9C-81FD-37405E2A37B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YuhanTalkServer", "YuhanTalkServer\YuhanTalkServer.csproj", "{BACB1CC8-ECCE-4E9C-81FD-37405E2A37B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

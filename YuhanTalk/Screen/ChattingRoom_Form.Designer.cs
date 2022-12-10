@@ -132,6 +132,8 @@
             this.Controls.Add(this.pnl_header);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "ChattingRoom_Form";
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Form1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ChattingRoom_Form_FormClosing);
             this.Load += new System.EventHandler(this.YuhanTalk_Load);

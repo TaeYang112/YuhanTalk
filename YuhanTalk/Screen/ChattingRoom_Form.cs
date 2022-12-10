@@ -76,11 +76,14 @@ namespace YuhanTalk
                     // 아무것도 치지 않았다면 나감
                     if (tb_InputBox.Text == "")
                     {
+                        e.Handled = true;
                         return;
                     }
 
+                    string time = DateTime.Now.ToString("tt h:mm");
+
                     // 컨트롤 추가
-                    AddRChat(tb_InputBox.Text, DateTime.Now.ToString("tt h:mm"));
+                    AddRChat(tb_InputBox.Text, time);
 
                     // 서버로 전송
                     MessageGenerator generator = new MessageGenerator(Protocols.C_MSG);
@@ -88,6 +91,16 @@ namespace YuhanTalk
                     generator.AddString(tb_InputBox.Text);
 
                     yuhanTalkManager?.SendMessage(generator.Generate());
+
+                    // 채팅 목록 수정
+                    ChattingRoom? room = null;
+                    yuhanTalkManager?.ChattingRoom_Dic.TryGetValue(roomID,out room);
+
+                    if(room != null)
+                    {
+                        room.SetContext(tb_InputBox.Text);
+                        room.SetTime(time);
+                    }
 
                     // 입력창 비움
                     tb_InputBox.Text = "";

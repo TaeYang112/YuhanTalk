@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Data;
 using YuhanTalkModule;
 using YuhanTalkServer.Client;
 using YuhanTalkServer.TCP;
@@ -212,7 +213,37 @@ namespace YuhanTalkServer
             }
 
         }
-        
+
+        // 메시지 전송
+        public void SendMessageInRoom(byte[] message, int roomId, ClientUser ignoreClient)
+        {
+            // 해당 방번호에 있는 유저 검색
+            string query2 = $"select user_ID from Participant WHERE room_ID = {roomId}";
+            DataSet ds = OracleDB.ExecuteDataAdt(query2);
+
+
+            // 각 유저 아이디가 있는 행 반복
+            foreach (var item in ds.Tables[0].Rows)
+            {
+                DataRow dr = (item as DataRow)!;
+                string userID = Convert.ToString(dr[0])!;
+
+                // 해당 방에 있는 유저가 접속중인지 검색
+                ClientUser? user;
+                clientManager.ClientDic.TryGetValue(userID, out user);
+                // 접속중이라면
+                if (user != null)
+                {
+                    if(user == ignoreClient) continue;
+
+                    // 서버가 받은 메시지를 보냄
+                    SendMessage(message, user);
+                }
+
+            }
+            ds.Dispose();
+        }
+
         #region Event
 
         // 서버에 새로운 클라이언트가 접속하면 호출됨

@@ -60,22 +60,32 @@ namespace YuhanTalk.CustomControl
             BackgroundImage = Properties.Resources.Chatting_Room_ON;
         }
 
+        // 방을 선택
         private void ChattingRoom_Click(object sender, EventArgs e)
         {
             if(mainForm != null)
-            { 
-                ChattingRoom_Form form = new ChattingRoom_Form(mainForm.YuhanTalkManager, RoomID);
-                bool result =  mainForm.YuhanTalkManager.ChattingForm_Dic.TryAdd(RoomID, form);
+            {
+                // 선택한 방번호에 해당하는 폼이 이미 열려있는지 확인
+                bool result = mainForm.YuhanTalkManager.ChattingForm_Dic.ContainsKey(RoomID);
 
-                if(result == true)
+                // 열려있지 않다면
+                if(result == false)
                 {
+                    // 채팅창 폼 생성
+                    ChattingRoom_Form form = new ChattingRoom_Form(mainForm.YuhanTalkManager, RoomID);
+                    form.Location = new Point(mainForm.Left + mainForm.Width, mainForm.Top);
+
+                    // 딕셔너리에 넣고 결과를 받아옴
+                    bool result2 = mainForm.YuhanTalkManager.ChattingForm_Dic.TryAdd(RoomID, form);
+                    if (result2 == false) return;
+
+                    // 폼을 열고 채팅 기록을 요청함
                     form.Show();
                     form.LoadChatHistory();
                 }
+                // 해당 방이 이미 열려있다면
                 else
                 {
-                    form.Dispose();
-
                     ChattingRoom_Form? oldForm;
                     mainForm.YuhanTalkManager.ChattingForm_Dic.TryGetValue(RoomID, out oldForm);
 

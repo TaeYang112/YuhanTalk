@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using YuhanTalk.Class.Core;
 using YuhanTalk.CustomControl;
 
 namespace YuhanTalk.Screen
@@ -21,6 +22,9 @@ namespace YuhanTalk.Screen
         {
             InitializeComponent();
             YuhanTalkManager = new YuhanTalkManager(this);
+
+            // 폼 외부 그림자
+            new DropShadow().ApplyShadows(this);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -31,7 +35,7 @@ namespace YuhanTalk.Screen
             btn_ExitProgram.BringToFront();
 
 
-            UserControl userControl = new LoginScreen(this);
+            UserControl userControl = new LoginScreen(YuhanTalkManager);
             ChangeScreen(userControl);
         }
 

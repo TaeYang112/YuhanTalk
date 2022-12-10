@@ -12,18 +12,17 @@ namespace YuhanTalk.Screen
 {
     public partial class YuhanTalkScreen : UserControl
     {
-        private MainForm mainForm;
-        public YuhanTalkScreen(MainForm mainForm)
+        private YuhanTalkManager yuhanTalkManager;
+        public YuhanTalkScreen(YuhanTalkManager talkManager)
         {
             InitializeComponent();
-            this.mainForm = mainForm;
             Name = "YuhanTalk";
-            
+            this.yuhanTalkManager = talkManager;
         }
 
         private void YuhanTalkScreen_Load(object sender, EventArgs e)
         {
-            ChangeScreen(new RoomsScreen(mainForm));
+            ChangeScreen(new RoomsScreen(yuhanTalkManager));
         }
 
         public void ChangeScreen(UserControl control)

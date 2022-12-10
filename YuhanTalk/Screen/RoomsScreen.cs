@@ -13,11 +13,11 @@ namespace YuhanTalk.Screen
 {
     public partial class RoomsScreen : UserControl
     {
-        MainForm mainForm;
-        public RoomsScreen(MainForm mainForm)
+        YuhanTalkManager talkManager;
+        public RoomsScreen(YuhanTalkManager talkManager)
         {
             InitializeComponent();
-            this.mainForm = mainForm;
+            this.talkManager = talkManager;
             Name = "Rooms";
         }
 
@@ -25,7 +25,14 @@ namespace YuhanTalk.Screen
         {
             MessageGenerator generator = new MessageGenerator(Protocols.C_REQ_ROOM_LIST);
 
-            mainForm.YuhanTalkManager.SendMessage(generator.Generate());
+            talkManager.SendMessage(generator.Generate());
+        }
+
+        private void btn_AddChatting_Click(object sender, EventArgs e)
+        {
+            Form form = new AddChattingForm(talkManager);
+            form.ShowDialog();
+
         }
     }
 }

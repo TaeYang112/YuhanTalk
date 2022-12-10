@@ -7,6 +7,7 @@ using YuhanTalkServer.Client;
 using YuhanTalkServer;
 using System.Data;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 
 namespace YuhanTalkServer
 {
@@ -49,7 +50,7 @@ namespace YuhanTalkServer
                 // 방 목록 요청 수신
                 case Protocols.C_REQ_ROOM_LIST:
                     {
-                        ResponseRoomList(client, converter);
+                        ResponseRoomList(client);
                     }
                     break;
                 // 채팅 목록 수신
@@ -58,12 +59,25 @@ namespace YuhanTalkServer
                         ResponseChatLIst(client, converter);
                     }
                     break;
+                // ID체크 요청 수신
+                case Protocols.C_REQ_CHECK_ID:
+                    {
+                        ResponseIDCheckResult(client, converter);
+                    }
+                    break;
+                case Protocols.C_REQ_CREATE_ROOM:// 방생 요청 수신
+                    {
+                        CreateRoomProcess(client, converter);
+                    }
+                    break;
                 default:
                     Console.WriteLine("에러 프로토콜 : " + protocol);
                     break;
 
             }
         }
+
+        
 
         private void LoginProcess(ClientUser client, MessageConverter convert)
         {
@@ -108,7 +122,7 @@ namespace YuhanTalkServer
             program.SendMessage(generator.Generate(), client);
         }
 
-        private void ResponseRoomList(ClientUser client, MessageConverter converter)
+        private void ResponseRoomList(ClientUser client)
         {
             // 자신이 참가하고 있는 방 검색
             string query = $"select * from Participant WHERE user_ID = '{client.ID}'";
@@ -119,7 +133,7 @@ namespace YuhanTalkServer
                 int RoomId = Convert.ToInt32(dr[0]);
 
                 // 자신이 참가한 방에 있는 사람 검색
-                string query2 = $"select user_ID from Participant where room_ID ={RoomId}";
+                string query2 = $"select name from Participant, userInfo where userInfo.ID = Participant.User_ID AND room_ID ={RoomId}";
 
                 DataSet ds2 = program.OracleDB.ExecuteDataAdt(query2);
 
@@ -131,7 +145,7 @@ namespace YuhanTalkServer
                 {
                     if (RoomName.Length != 0) RoomName += ", ";
 
-                    RoomName += program.OracleDB.GetName(dr2[0].ToString()!);
+                    RoomName += dr2[0].ToString()!;
                 }
 
                 // 해당 방에 마지막으로 보낸 채팅 검색
@@ -153,10 +167,13 @@ namespace YuhanTalkServer
                 generator.AddInt(RoomId);
                 generator.AddString(RoomName);
                 generator.AddString(LastMessage);
-                generator.AddString(DateTime.Parse(LastTime).ToString("tt h:mm"));
+                if(LastTime == "") 
+                    generator.AddString("");
+                else 
+                    generator.AddString(DateTime.Parse(LastTime).ToString("tt h:mm"));
 
                 // 전송
-                program.SendMessage(generator.Generate(),client);
+                program.SendMessage(generator.Generate(), client);
                 
                 ds2.Dispose();
             }
@@ -168,16 +185,14 @@ namespace YuhanTalkServer
             int roomID = converter.NextInt();
             string message = converter.NextString();
 
+            string dbMessage = message.Replace("\'", "\'\'");
+
             // 서버 기준 현재시간 받음
             DateTime dt = DateTime.Now;
 
             // 데이터베이스에 채팅을 넣음
-            string query = $"insert into CHATTING(room_id, id, message, time) values({roomID}, '{clientUser.ID}','{message}', to_date('{dt:yyyy/MM/dd HH:mm:ss}','yyyy/mm/dd hh24:mi:ss'))";
-            program.OracleDB.InsertData(query);
-
-            // 해당 방번호에 있는 유저 검색
-            string query2 = $"select user_ID from Participant WHERE room_ID = {roomID} AND USER_ID <> '{clientUser.ID}'";
-            DataSet ds = program.OracleDB.ExecuteDataAdt(query2);
+            string query = $"insert into CHATTING(room_id, id, message, time) values({roomID}, '{clientUser.ID}','{dbMessage}', to_date('{dt:yyyy/MM/dd HH:mm:ss}','yyyy/mm/dd hh24:mi:ss'))";
+            program.OracleDB.ExecuteQuery(query);
 
             // 유저에게 보낼 메시지 생성
             MessageGenerator generator = new MessageGenerator(Protocols.S_MSG);
@@ -186,24 +201,8 @@ namespace YuhanTalkServer
             generator.AddString(clientUser.Name);
             generator.AddString(dt.ToString("tt h:mm"));
 
-            // 각 유저 아이디가 있는 행 반복
-            foreach (var item in ds.Tables[0].Rows)
-            {
-                DataRow dr = (item as DataRow)!;
-                string userID = Convert.ToString(dr[0])!;
-
-                // 해당 방에 있는 유저가 접속중인지 검색
-                ClientUser? user;
-                program.clientManager.ClientDic.TryGetValue(userID, out user);
-                // 접속중이라면
-                if (user != null)
-                {
-                    // 서버가 받은 메시지를 보냄
-                    program.SendMessage(generator.Generate(), user);
-                }
-                
-            }
-            ds.Dispose();
+            // 방에 있는 접속중인 유저에게 메시지 전송
+            program.SendMessageInRoom(generator.Generate(), roomID, clientUser);
         }
 
         // 특정 방에 있는 채팅 내역 송신
@@ -250,6 +249,104 @@ namespace YuhanTalkServer
                 program.SendMessage(generator.Generate(), clientUser);
 
             }
+            ds.Dispose();
+        }
+
+
+        // 사용자가 채팅방 초대를 위해 입력한 ID가 실재하는지 검증해줌
+        private void ResponseIDCheckResult(ClientUser clientUser, MessageConverter converter)
+        {
+            string id = converter.NextString();
+
+            MessageGenerator messageGenerator = new MessageGenerator(Protocols.S_RES_CHECK_ID);
+            messageGenerator.AddString(id);
+
+            // 사용자 본인의 아이디라면 에러 전송
+            if(clientUser.ID == id)
+            {
+                messageGenerator.AddByte(IDCheckResult.ERROR_SAME_YOUR_ID);
+                program.SendMessage(messageGenerator.Generate(), clientUser);
+                return;
+            }
+
+            // 아이디 검색
+            string query = $"select id from userInfo where id = '{id}'";
+
+           OracleDataReader dr =  program.OracleDB.SelectData(query);
+
+            // 존재한다면
+            if(dr.Read())
+            {
+                // 성공 메시지
+                messageGenerator.AddByte(IDCheckResult.SUCCESS);
+            }
+            // 존재하지 않으면
+            else
+            {
+                // 에러 메시지
+                messageGenerator.AddByte(IDCheckResult.ERROR_NO_ID);
+            }
+
+            // 전송
+            program.SendMessage(messageGenerator.Generate(), clientUser);
+
+            dr.Dispose();
+        }
+
+        // 사용자의 방 생성 요청
+        private void CreateRoomProcess(ClientUser client, MessageConverter converter)
+        {
+            // 초대인원 수
+            int count = converter.NextInt();
+
+            // DB에 새로운 방 추가
+            OracleParameterCollection param = program.OracleDB.ExecuteQuery($"insert into chattingRoom(s) values(1) returning id into :v_room_id",
+                new OracleParameter[1] { new OracleParameter("v_Room_ID", OracleDbType.Int64,2,0,ParameterDirection.ReturnValue) });
+
+            // 추가된 방 번호
+            int roomID = Convert.ToInt32((decimal)(OracleDecimal)(param["v_room_id"].Value));
+
+            program.OracleDB.ExecuteQuery($"insert into PARTICIPANT values({roomID},'{client.ID}')");
+            for (int i = 0; i < count; i++)
+            {
+                string id = converter.NextString();
+                program.OracleDB.ExecuteQuery($"insert into PARTICIPANT values({roomID},'{id}')");
+            }
+
+            // 자신이 참가한 방에 있는 사람 검색
+            string query = $"select name from Participant, userInfo where userInfo.ID = Participant.User_ID AND room_ID ={roomID}";
+
+            DataSet ds = program.OracleDB.ExecuteDataAdt(query);
+
+            // 방 제목
+            string RoomName = "";
+
+            // 참가자의 이름으로 방제목 설정함
+            foreach (DataRow dr2 in ds.Tables[0].Rows)
+            {
+                if (RoomName.Length != 0) RoomName += ", ";
+
+                RoomName += dr2[0].ToString()!;
+            }
+
+            // 방을 만든 클라이언트에게 보낼 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.S_CREATE_ROOM);
+            generator.AddInt(roomID);               // 방 번호
+            generator.AddString(RoomName);          // 방 이름
+            generator.AddBool(true);                // 채팅창을 띄울지 여부
+
+            // 전송
+            program.SendMessage(generator.Generate(), client);
+
+            // 방에있는 다른 클라이언트에게 보낼 메시지 생성
+            generator.Clear();
+            generator.AddInt(roomID);
+            generator.AddString(RoomName);
+            generator.AddBool(false);
+
+            // 전송
+            program.SendMessageInRoom(generator.Generate(), roomID, client);
+
             ds.Dispose();
         }
 

@@ -64,6 +64,18 @@ namespace YuhanTalk
                             ReceiveChatList(converter);
                         }
                         break;
+                    // 방 생성창에서 입력한 아이디가 실제 존재하는지 결과 수신
+                    case Protocols.S_RES_CHECK_ID:
+                        {
+                            ReceiveIDCheckResult(converter);
+                        }
+                        break;
+                    // 방 생성 결과 수신
+                    case Protocols.S_CREATE_ROOM:
+                        {
+                            AddRoomComplete(converter);
+                        }
+                        break;
                     case Protocols.S_ERROR:
                         {
                             Error(converter);
@@ -84,7 +96,7 @@ namespace YuhanTalk
                 if(result)
                 {
                     Console.WriteLine("로긴 성공");
-                    talkManager.MainForm.ChangeScreen(new YuhanTalkScreen(talkManager.MainForm));
+                    talkManager.MainForm.ChangeScreen(new YuhanTalkScreen(talkManager));
                 }
                 else
                 {
@@ -100,7 +112,7 @@ namespace YuhanTalk
                 switch(result)
                 {
                     case 0:
-                        talkManager.MainForm.ChangeScreen(new LoginScreen(talkManager.MainForm));
+                        talkManager.MainForm.ChangeScreen(new LoginScreen(talkManager));
                         break;
                 }
             }
@@ -118,24 +130,33 @@ namespace YuhanTalk
                 // 유효하다면
                 if(fl != null)
                 {
-                    // 채팅창 만듬
-                    ChattingRoom cr = new ChattingRoom(talkManager.MainForm, roomId);
-                    cr.SetTitle(roomName);
-                    cr.SetTime(time);
-                    cr.SetContext(lastMessage);
+                    ChattingRoom? cr = null;
 
-                    // 배열에 추가
-                    bool result = talkManager.ChattingRoom_Dic.TryAdd(roomId, cr);
+                    // 채팅방 목록이 존재하면 가져옴
+                    bool result = talkManager.ChattingRoom_Dic.TryGetValue(roomId, out cr);
 
-                    // 정상적으로 배열에 추가되었다면 패널에 넣음
-                    if (result == true)
+                    // 만약 없다면 새로 만들어서 넣어줌
+                    if(cr == null)
                     {
-                        // 추가
-                        fl.Invoke(new Action(() =>
-                        {
-                            fl.Controls.Add(cr);
-                        }));
+                        cr = new ChattingRoom(talkManager.MainForm, roomId);
                     }
+
+                    // 패널에 넣음
+                    fl.Invoke(new Action(() =>
+                    {
+                        // 정보 수정
+                        cr.SetTitle(roomName);
+                        cr.SetTime(time);
+                        cr.SetContext(lastMessage);
+
+                        // 만약 새로 만들어진
+                        if (result == false)
+                        {
+                            talkManager.ChattingRoom_Dic.Add(roomId, cr);
+                            fl.Controls.Add(cr);
+                        }
+                    }));
+                    
                     
                     
                 }
@@ -155,13 +176,32 @@ namespace YuhanTalk
                 // 해당 방번호에 해당하는 폼을 찾음
                 talkManager.ChattingForm_Dic.TryGetValue(roomID, out form);
 
+                // 폼이 존재하면
                 if(form != null)
                 {
                     form.Invoke(new Action(() =>
                     {
+                        // 채팅 추가
                         form.AddLChat(message, name, time);
                     }
                     ));
+                }
+
+
+                ChattingRoom? room;
+
+                // 해당 방번호에 해당하는 채팅방 목록을 찾음
+                talkManager.ChattingRoom_Dic.TryGetValue(roomID, out room);
+
+                // 목록이 존재하면
+                if(room != null)
+                {
+                    room.Invoke(new Action(() =>
+                    {
+                        room.SetContext(message);
+                        room.SetTime(time);
+
+                    }));
                 }
             }
 
@@ -194,6 +234,98 @@ namespace YuhanTalk
                         }
                     }
                     ));
+                }
+
+            }
+
+            // 채팅방 생성중 입력한 ID가 실제 존재하는지에 대한 결과를 받음
+            private void ReceiveIDCheckResult(MessageConverter converter)
+            {
+                string id = converter.NextString();
+                byte result = converter.NextByte();
+
+                // 현재 채팅방 생성폼이 열려있는지 확인
+                AddChattingForm? form = Application.OpenForms["AddChattingForm"] as AddChattingForm;
+                if (form != null)
+                {
+                    // 메인 스레드에서 창을 띄우기 위해 Invoke 사용
+                    talkManager.MainForm.BeginInvoke(new Action(() =>
+                    {
+                        switch (result)
+                        {
+                            case IDCheckResult.SUCCESS:
+                                {
+                                    form.AddID(id);
+                                }
+                                break;
+                            case IDCheckResult.ERROR_NO_ID:
+                                {
+                                    MyMessageBox msgBox = new MyMessageBox("아이디가 존재하지 않습니다!");
+                                    msgBox.Location = new Point(form.Left + form.Width / 2 - msgBox.Width / 2, form.Top + form.Height / 2 - msgBox.Height / 2);
+                                    msgBox.ShowDialog();
+                                }
+                                break;
+                            case IDCheckResult.ERROR_SAME_YOUR_ID:
+                                {
+                                    MyMessageBox msgBox = new MyMessageBox("자신의 아이디는 추가할 수 없습니다!");
+                                    msgBox.Location = new Point(form.Left + form.Width / 2 - msgBox.Width / 2, form.Top + form.Height / 2 - msgBox.Height / 2);
+                                    msgBox.ShowDialog();
+                                }
+                                break;
+                        }
+                    }));
+                }
+            }
+
+            // 방 생성이 완료됨
+            private void AddRoomComplete(MessageConverter converter)
+            {
+                int roomID = converter.NextInt();
+                string roomTitle = converter.NextString();
+                bool doOpen = converter.NextBool();
+
+                // 현재 채팅방 생성폼이 열려있는지 확인
+                AddChattingForm? addChattingForm = Application.OpenForms["AddChattingForm"] as AddChattingForm;
+                if(addChattingForm != null)
+                {
+                    // 닫음
+                    addChattingForm.Close();
+                }
+
+
+                // 방 목록 추가
+                // 컨트롤 검색 ( 방 목록 레이아웃 )
+                FlowLayoutPanel? fl = talkManager.MainForm.Controls.Find("fl_ChattingList", true).FirstOrDefault() as FlowLayoutPanel;
+                if (fl != null)
+                {
+                    // 컨트롤 생성
+                    ChattingRoom cr = new ChattingRoom(talkManager.MainForm, roomID);
+                    cr.SetTitle(roomTitle);
+                    cr.SetTime("");
+                    cr.SetContext("");
+
+                    // 배열에 넣음
+                    talkManager.ChattingRoom_Dic.Add(roomID, cr);
+
+                    fl.Invoke(new Action(() =>
+                    {
+                        // 패널에 넣음
+                        fl.Controls.Add(cr);
+                    }));
+                }
+
+                if (doOpen)
+                {
+                    talkManager.MainForm.BeginInvoke(new Action(() =>
+                    {
+                    // 방 생성과 동시에 채팅방 폼을 띄움
+                    ChattingRoom_Form form = new ChattingRoom_Form(talkManager, roomID);
+                        bool result = talkManager.ChattingForm_Dic.TryAdd(roomID, form);
+
+                    // 위치를 메인 폼 오른쪽으로 함
+                    form.Location = new Point(talkManager.MainForm.Left + talkManager.MainForm.Width, talkManager.MainForm.Top);
+                        form.Show();
+                    }));
                 }
 
             }

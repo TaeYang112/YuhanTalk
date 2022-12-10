@@ -53,22 +53,39 @@ namespace YuhanTalkServer
             return ds;
         }
 
-        public int InsertData(string query)
+        public OracleParameterCollection ExecuteQuery(string query, OracleParameter[]? parameter = null)
         {
             try
             {
                 using (OracleCommand cmd = new OracleCommand(query, conn))
                 {
+                    if (parameter != null)
+                    {
+                        cmd.Parameters.AddRange(parameter);
+                    }
                     cmd.ExecuteNonQuery();
+                    return cmd.Parameters;
                 }
             }
             catch (OracleException ex)
             {
                 Console.WriteLine(ex);
-                return ex.Number;
             }
 
-            return 0;
+            return null;
+        }
+
+        public OracleDataReader SelectData(string query)
+        {
+            LoginInfo info = new LoginInfo();
+            info.Empty = true;
+
+            OracleDataReader dr;
+            using (OracleCommand cmd = new OracleCommand(query, conn))
+            {
+                dr = cmd.ExecuteReader();
+                return dr;
+            }
         }
 
 
