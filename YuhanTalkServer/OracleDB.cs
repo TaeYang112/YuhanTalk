@@ -53,7 +53,7 @@ namespace YuhanTalkServer
             return ds;
         }
 
-        public OracleParameterCollection ExecuteQuery(string query, OracleParameter[]? parameter = null)
+        public OracleParameterCollection? ExecuteQuery(string query, OracleParameter[]? parameter = null)
         {
             try
             {

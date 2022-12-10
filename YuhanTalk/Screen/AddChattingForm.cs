@@ -77,7 +77,78 @@ namespace YuhanTalk.Screen
             }
         }
 
-        
+        // 삭제 버튼
+        private void btn_RemoveID_Click(object sender, EventArgs e)
+        {
+            int idx = lv_list.SelectedIndex;
+            if (idx != -1)
+            {
+                lv_list.Items.RemoveAt(idx);
+            }
+        }
+
+        // 엔터키 입력
+        private void tb_InputBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                RequestAddID();
+            }
+        }
+
+        private void btn_AddID_Click(object sender, EventArgs e)
+        {
+            RequestAddID();
+        }
+
+        // 입력한 ID가 실재하는지 서버에게 검사를 요청함
+        private void RequestAddID()
+        {
+            // 입력창이 비어있거나 "아이디" 라는 메시지가 떠있으면 요청 무시
+            if (tb_InputBox.Text == "" || inputFlag == false) return;
+
+            foreach (var item in lv_list.Items)
+            {
+                if (item.ToString() == tb_InputBox.Text)
+                    return;
+            }
+
+            // 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.C_REQ_CHECK_ID);
+            generator.AddString(tb_InputBox.Text);
+
+            // 전송
+            talkManager?.SendMessage(generator.Generate());
+
+
+            tb_InputBox.Text = "";
+        }
+
+        // 생성버튼
+        private void btn_Commit_Click(object sender, EventArgs e)
+        {
+            // 비어있다면 리턴
+            if(lv_list.Items.Count == 0) return;
+
+            // 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.C_REQ_CREATE_ROOM);
+
+            // 인원수 입력
+            generator.AddInt(lv_list.Items.Count);
+            foreach (var item in lv_list.Items)
+            {
+                // 아이디 입력
+                generator.AddString(item.ToString()!);
+            }
+
+            // 전송
+            talkManager?.SendMessage(generator.Generate());
+        }
+
+        private void AddChattingForm_Load(object sender, EventArgs e)
+        {
+
+        }
 
 
         #region 위에 잡고 움직일 수 있는 패널
@@ -111,67 +182,7 @@ namespace YuhanTalk.Screen
         }
         #endregion
 
-        private void btn_RemoveID_Click(object sender, EventArgs e)
-        {
-            int idx = lv_list.SelectedIndex;
-            if(idx != -1)
-            {
-                lv_list.Items.RemoveAt(idx);
-            }
-        }
-
-        // 엔터키 입력
-        private void tb_InputBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                RequestAddID();
-            }
-        }
-
-        private void btn_AddID_Click(object sender, EventArgs e)
-        {
-            RequestAddID();
-        }
-
-        // 입력한 ID가 실재하는지 서버에게 검사르 요청함
-        private void RequestAddID()
-        {
-            // 입력창이 비어있거나 "아이디" 라는 메시지가 떠있으면 요청 무시
-            if (tb_InputBox.Text == "" || inputFlag == false) return;
-
-            foreach (var item in lv_list.Items)
-            {
-                if (item.ToString() == tb_InputBox.Text)
-                    return;
-            }
-
-            // 메시지 생성
-            MessageGenerator generator = new MessageGenerator(Protocols.C_REQ_CHECK_ID);
-            generator.AddString(tb_InputBox.Text);
-
-            // 전송
-            talkManager?.SendMessage(generator.Generate());
-
-
-            tb_InputBox.Text = "";
-        }
-
-        private void btn_Commit_Click(object sender, EventArgs e)
-        {
-            MessageGenerator generator = new MessageGenerator(Protocols.C_REQ_CREATE_ROOM);
-            generator.AddInt(lv_list.Items.Count);
-            foreach(var item in lv_list.Items)
-            {
-                generator.AddString(item.ToString()!);
-            }
-            talkManager?.SendMessage(generator.Generate());  
-        }
-
-        private void AddChattingForm_Load(object sender, EventArgs e)
-        {
-
-        }
+        
 
         
     }

@@ -101,6 +101,7 @@
             this.Controls.Add(this.pnl_header);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MyMessageBox";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ErrorForm";
             this.pnl_header.ResumeLayout(false);
             this.ResumeLayout(false);

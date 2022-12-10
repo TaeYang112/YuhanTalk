@@ -95,12 +95,17 @@ namespace YuhanTalk
                 // 로그인에 성공
                 if(result)
                 {
-                    Console.WriteLine("로긴 성공");
                     talkManager.MainForm.ChangeScreen(new YuhanTalkScreen(talkManager));
                 }
                 else
                 {
-                    Console.WriteLine("로긴 실패");
+                    // 로그인 실패
+                    // 메인 스레드에서 창을 띄우기 위해 Invoke 사용
+                    talkManager.MainForm.BeginInvoke(new Action(() =>
+                    {
+                        MyMessageBox msgBox = new MyMessageBox("아이디와 비밀번호가 일치하지 않습니다.");
+                        msgBox.ShowDialog();
+                    }));
                 }
             }
 
