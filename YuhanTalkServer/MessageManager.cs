@@ -300,8 +300,10 @@ namespace YuhanTalkServer
             int count = converter.NextInt();
 
             // DB에 새로운 방 추가
-            OracleParameterCollection param = program.OracleDB.ExecuteQuery($"insert into chattingRoom(s) values(1) returning id into :v_room_id",
+            OracleParameterCollection ?param = program.OracleDB.ExecuteQuery($"insert into chattingRoom(s) values(1) returning id into :v_room_id",
                 new OracleParameter[1] { new OracleParameter("v_Room_ID", OracleDbType.Int64,2,0,ParameterDirection.ReturnValue) });
+
+            if (param == null) return;
 
             // 추가된 방 번호
             int roomID = Convert.ToInt32((decimal)(OracleDecimal)(param["v_room_id"].Value));

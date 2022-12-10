@@ -51,12 +51,11 @@
             // 
             // lbl_title
             // 
-            this.lbl_title.AutoSize = true;
             this.lbl_title.BackColor = System.Drawing.Color.Transparent;
             this.lbl_title.Font = new System.Drawing.Font("맑은 고딕", 8.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lbl_title.Location = new System.Drawing.Point(66, 10);
             this.lbl_title.Name = "lbl_title";
-            this.lbl_title.Size = new System.Drawing.Size(43, 15);
+            this.lbl_title.Size = new System.Drawing.Size(130, 22);
             this.lbl_title.TabIndex = 1;
             this.lbl_title.Text = "방제목";
             this.lbl_title.Click += new System.EventHandler(this.ChattingRoom_Click);
@@ -67,8 +66,9 @@
             // 
             this.lbl_context.BackColor = System.Drawing.Color.Transparent;
             this.lbl_context.Location = new System.Drawing.Point(66, 32);
+            this.lbl_context.MaximumSize = new System.Drawing.Size(130, 0);
             this.lbl_context.Name = "lbl_context";
-            this.lbl_context.Size = new System.Drawing.Size(130, 17);
+            this.lbl_context.Size = new System.Drawing.Size(130, 15);
             this.lbl_context.TabIndex = 2;
             this.lbl_context.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lbl_context.Click += new System.EventHandler(this.ChattingRoom_Click);
@@ -79,11 +79,10 @@
             // 
             this.lbl_time.BackColor = System.Drawing.Color.Transparent;
             this.lbl_time.ForeColor = System.Drawing.Color.Gray;
-            this.lbl_time.Location = new System.Drawing.Point(196, 18);
+            this.lbl_time.Location = new System.Drawing.Point(196, 17);
             this.lbl_time.Name = "lbl_time";
-            this.lbl_time.Size = new System.Drawing.Size(74, 23);
+            this.lbl_time.Size = new System.Drawing.Size(74, 38);
             this.lbl_time.TabIndex = 3;
-            this.lbl_time.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lbl_time.Click += new System.EventHandler(this.ChattingRoom_Click);
             this.lbl_time.MouseEnter += new System.EventHandler(this.ChattingRoom_MouseEnter);
             this.lbl_time.MouseLeave += new System.EventHandler(this.ChattingRoom_MouseLeave);
@@ -106,7 +105,6 @@
             this.MouseLeave += new System.EventHandler(this.ChattingRoom_MouseLeave);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

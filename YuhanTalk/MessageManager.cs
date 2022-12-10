@@ -119,6 +119,16 @@ namespace YuhanTalk
                     case 0:
                         talkManager.MainForm.ChangeScreen(new LoginScreen(talkManager));
                         break;
+                    case 1:
+                        {
+                            talkManager.MainForm.BeginInvoke(new Action(() =>
+                            {
+                                MyMessageBox msgBox = new MyMessageBox("아이디가 이미 존재합니다.");
+                                msgBox.ShowDialog();
+                            }));
+                        }
+                        break;
+
                 }
             }
 

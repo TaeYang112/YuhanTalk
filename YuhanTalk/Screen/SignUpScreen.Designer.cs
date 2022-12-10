@@ -51,7 +51,6 @@
             this.lklbl_GoToLogin.Name = "lklbl_GoToLogin";
             this.lklbl_GoToLogin.Size = new System.Drawing.Size(107, 15);
             this.lklbl_GoToLogin.TabIndex = 4;
-            this.lklbl_GoToLogin.TabStop = true;
             this.lklbl_GoToLogin.Text = "처음으로 돌아가기";
             this.lklbl_GoToLogin.VisitedLinkColor = System.Drawing.Color.Black;
             this.lklbl_GoToLogin.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lklbl_GoToLogin_LinkClicked);
@@ -106,7 +105,7 @@
             this.tb_Name.Margin = new System.Windows.Forms.Padding(0);
             this.tb_Name.Name = "tb_Name";
             this.tb_Name.Size = new System.Drawing.Size(217, 19);
-            this.tb_Name.TabIndex = 0;
+            this.tb_Name.TabIndex = 3;
             this.tb_Name.Text = "이름";
             this.tb_Name.Enter += new System.EventHandler(this.tb_InputBox_Enter);
             this.tb_Name.Leave += new System.EventHandler(this.tb_InputBox_Leave);
@@ -133,7 +132,7 @@
             this.tb_PwCheck.Location = new System.Drawing.Point(10, 80);
             this.tb_PwCheck.Name = "tb_PwCheck";
             this.tb_PwCheck.Size = new System.Drawing.Size(217, 19);
-            this.tb_PwCheck.TabIndex = 1;
+            this.tb_PwCheck.TabIndex = 2;
             this.tb_PwCheck.Text = "비밀번호";
             this.tb_PwCheck.Enter += new System.EventHandler(this.tb_InputBox_Enter);
             this.tb_PwCheck.Leave += new System.EventHandler(this.tb_InputBox_Leave);
@@ -159,7 +158,7 @@
             this.btn_SignUp.Location = new System.Drawing.Point(55, 333);
             this.btn_SignUp.Name = "btn_SignUp";
             this.btn_SignUp.Size = new System.Drawing.Size(240, 41);
-            this.btn_SignUp.TabIndex = 5;
+            this.btn_SignUp.TabIndex = 4;
             this.btn_SignUp.Text = "회원가입";
             this.btn_SignUp.UseVisualStyleBackColor = false;
             this.btn_SignUp.Click += new System.EventHandler(this.btn_SignUp_Click);

@@ -32,6 +32,7 @@
             this.pnl_header = new System.Windows.Forms.Panel();
             this.btn_OK = new System.Windows.Forms.Button();
             this.lbl_message = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.pnl_header.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -69,6 +70,7 @@
             // btn_OK
             // 
             this.btn_OK.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
+            this.btn_OK.FlatAppearance.BorderSize = 0;
             this.btn_OK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.btn_OK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.btn_OK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -90,12 +92,21 @@
             this.lbl_message.Text = "메시지";
             this.lbl_message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.panel1.Location = new System.Drawing.Point(0, 89);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(240, 1);
+            this.panel1.TabIndex = 8;
+            // 
             // MyMessageBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(240, 129);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.lbl_message);
             this.Controls.Add(this.btn_OK);
             this.Controls.Add(this.pnl_header);
@@ -114,5 +125,6 @@
         private Panel pnl_header;
         private Button btn_OK;
         private Label lbl_message;
+        private Panel panel1;
     }
 }

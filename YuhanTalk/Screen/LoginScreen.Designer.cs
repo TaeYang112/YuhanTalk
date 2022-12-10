@@ -87,7 +87,6 @@
             this.lklbl_GoToSignUp.Name = "lklbl_GoToSignUp";
             this.lklbl_GoToSignUp.Size = new System.Drawing.Size(55, 15);
             this.lklbl_GoToSignUp.TabIndex = 2;
-            this.lklbl_GoToSignUp.TabStop = true;
             this.lklbl_GoToSignUp.Text = "회원가입";
             this.lklbl_GoToSignUp.VisitedLinkColor = System.Drawing.Color.Black;
             this.lklbl_GoToSignUp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lklbl_GoToSignUp_LinkClicked);
