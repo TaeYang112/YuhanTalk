@@ -1,0 +1,27 @@
+create table userInfo(
+ID varchar2(15) PRIMARY KEY,
+PASSWORD varchar2(20),
+name varchar2(20)
+);
+
+Create table ChattingRoom(
+id number generated always as identity PRIMARY KEY
+);
+
+CREATE TABLE Participant(
+room_ID number,
+user_ID varchar2(15),
+CONSTRAINT fk_droomID foreign key(room_ID) references ChattingRoom (id),
+CONSTRAINT fk_duser_ID foreign key(user_ID) references USERINFO (id),
+CONSTRAINT pk_p PRIMARY KEY(room_ID,USER_ID)
+);
+
+Create table Chatting(
+idx number generated always as identity PRIMARY KEY,
+room_ID number NOT NULL,
+ID VARCHAR2(15) NOT NULL,
+MESSAGE CLOB NOT NULL,
+time date,
+CONSTRAINT fk_roomID foreign key(room_ID) references ChattingRoom (id)
+);
+
