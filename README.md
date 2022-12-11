@@ -6,7 +6,7 @@
 사용 언어 및 개발 환경은 다음과 같습니다.
 
 * 개발 언어 : C# .NET 5.0
-* 개발 환경 : Windows Form, Windows OS
+* 개발 환경 : Windows Form, Windows OS, Oracle Database 19c
 
 <br><br><br>
 
